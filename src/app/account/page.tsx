@@ -39,7 +39,7 @@ export default function Account() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { user, token, logout } = useAuth(); // Ensure token is available in your context
   const [editingFields, setEditingFields] = useState({
-    email: false,
+    // email: false,
     first_name: false,
     last_name: false,
     phone: false,
@@ -187,6 +187,7 @@ export default function Account() {
   }
 
   return (
+    <div className="flex flex-col min-h-[100dvh]">
     <div className="p-6 space-y-6">
     <div className="flex items-center space-x-4">
     <Button variant="ghost" size="icon">
@@ -218,47 +219,6 @@ export default function Account() {
               </Avatar>
               <div className="font-medium">{selectedUser?.first_name} {selectedUser?.last_name}</div>
               <div className="text-muted-foreground">{selectedUser?.email}</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>Email</div>
-              <div className="flex items-center gap-2">
-                {editingFields.email ? (
-                  <>
-                    <Input
-                      id="email-input"
-                      defaultValue={selectedUser?.email}
-                    />
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleSave("email")}
-                    >
-                      <CheckIcon className="h-4 w-4" />
-                      <span className="sr-only">Save email</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleCancel("email")}
-                    >
-                      <XIcon className="h-4 w-4" />
-                      <span className="sr-only">Cancel</span>
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <div>{selectedUser?.email}</div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleEdit("email")}
-                    >
-                      <PencilIcon className="h-4 w-4" />
-                      <span className="sr-only">Edit email</span>
-                    </Button>
-                  </>
-                )}
-              </div>
             </div>
             <div className="flex items-center justify-between">
               <div>First Name</div>
@@ -390,19 +350,21 @@ export default function Account() {
         <Card>
           <CardHeader>
             <CardTitle>Change Password</CardTitle>
+            <br />
+            <small className="text-red-500 my-2">Out of service for now!</small>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="current-password">Current Password</Label>
-              <Input id="current-password" type="password" />
+              <Input disabled id="current-password" type="password" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="new-password">New Password</Label>
-              <Input id="new-password" type="password" />
+              <Input disabled id="new-password" type="password" />
             </div>
           </CardContent>
           <CardFooter>
-            <Button>Save Changes</Button>
+            <Button disabled>Save Changes</Button>
           </CardFooter>
         </Card>
       </div>
@@ -428,6 +390,7 @@ export default function Account() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
     </div>
     </div>
   );
