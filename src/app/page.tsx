@@ -1,113 +1,227 @@
-import Image from "next/image";
+'use client';
+
+import { useAuth } from './context/auth'; // Adjust the import path as needed
+import { useRouter } from 'next/navigation';
+import { SVGProps, useEffect } from 'react';
+import Link from 'next/link';
+
 
 export default function Home() {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, router]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <div className="flex flex-col min-h-[100dvh]">
+        {/* <Header /> */}
+        <main className="flex-1">
+        <section className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6 mx-auto">
+            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+              <div className="flex flex-col justify-center space-y-4">
+                <div className="space-y-2">
+                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                    Discover New Books to Read
+                  </h1>
+                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                    Join our book exchange platform and explore a world of literary adventures. Request a book and start
+                    reading today.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                  <Link
+                    href="/auth"
+                    className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                    prefetch={false}
+                  >
+                    Request a Book
+                  </Link>
+                </div>
+              </div>
+              <img
+                src="/placeholder.svg"
+                alt="Hero"
+                className="mx-auto aspect-square overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
+                width="550"
+                height="550"
+              />
+            </div>
+          </div>
+        </section>
+        <section id='featured-books' className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Featured Books</h2>
+                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Check out our selection of featured books available for exchange.
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-12">
+              <div className="flex flex-col items-center justify-center space-y-2">
+                <img
+                  src="/placeholder.svg"
+                  alt="Book Cover"
+                  className="aspect-[3/4] overflow-hidden rounded-lg object-cover"
+                  width="150"
+                  height="200"
+                />
+                <div className="text-center">
+                  <h3 className="text-lg font-bold">The Great Gatsby</h3>
+                  <p className="text-muted-foreground">F. Scott Fitzgerald</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center space-y-2">
+                <img
+                  src="/placeholder.svg"
+                  alt="Book Cover"
+                  className="aspect-[3/4] overflow-hidden rounded-lg object-cover"
+                  width="150"
+                  height="200"
+                />
+                <div className="text-center">
+                  <h3 className="text-lg font-bold">To Kill a Mockingbird</h3>
+                  <p className="text-muted-foreground">Harper Lee</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center space-y-2">
+                <img
+                  src="/placeholder.svg"
+                  alt="Book Cover"
+                  className="aspect-[3/4] overflow-hidden rounded-lg object-cover"
+                  width="150"
+                  height="200"
+                />
+                <div className="text-center">
+                  <h3 className="text-lg font-bold">1984</h3>
+                  <p className="text-muted-foreground">George Orwell</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-center space-y-2">
+                <img
+                  src="/placeholder.svg"
+                  alt="Book Cover"
+                  className="aspect-[3/4] overflow-hidden rounded-lg object-cover"
+                  width="150"
+                  height="200"
+                />
+                <div className="text-center">
+                  <h3 className="text-lg font-bold">Pride and Prejudice</h3>
+                  <p className="text-muted-foreground">Jane Austen</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id='how-it-works' className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">How It Works</h2>
+                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Discover the simple steps to start exchanging books with others.
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 lg:gap-12">
+              <div className="flex flex-col items-center justify-center space-y-2">
+                <SearchIcon className="h-12 w-12 text-primary" />
+                <h3 className="text-xl font-bold">1. Search for Books</h3>
+                <p className="text-muted-foreground">
+                  Browse our selection of available books and find the ones you're interested in.
+                </p>
+              </div>
+              <div className="flex flex-col items-center justify-center space-y-2">
+                <ReplyIcon className="h-12 w-12 text-primary" />
+                <h3 className="text-xl font-bold">2. Request a Book</h3>
+                <p className="text-muted-foreground">
+                  Submit a request to exchange a book you have for the one you'd like to read.
+                </p>
+              </div>
+              <div className="flex flex-col items-center justify-center space-y-2">
+                <CurrencyIcon className="h-12 w-12 text-primary" />
+                <h3 className="text-xl font-bold">3. Exchange Books</h3>
+                <p className="text-muted-foreground">
+                  Once your request is approved, we'll facilitate the book exchange process.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      {/* <Footer /> */}
+    </div>
   );
+}
+
+
+
+
+function SearchIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  )
+}
+
+function ReplyIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="9 17 4 12 9 7" />
+      <path d="M20 18v-2a4 4 0 0 0-4-4H4" />
+    </svg>
+  )
+}
+
+function CurrencyIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="8" />
+      <line x1="3" x2="6" y1="3" y2="6" />
+      <line x1="21" x2="18" y1="3" y2="6" />
+      <line x1="3" x2="6" y1="21" y2="18" />
+      <line x1="21" x2="18" y1="21" y2="18" />
+    </svg>
+  )
 }
