@@ -619,8 +619,7 @@ export default function RequestDetails({
             <Card>
               <CardContent className="grid gap-4">
                 <div className="font-medium">Pickup Location</div>
-                {isRequester ? (
-                  <MapContainer
+                <MapContainer
                     className="-z-0"
                     center={[
                       selectedRequest.RequestedBook.location?.latitude ?? 0,
@@ -643,33 +642,6 @@ export default function RequestDetails({
                       <Popup>This is the location!</Popup>
                     </Marker>
                   </MapContainer>
-                ) : (
-                  <MapContainer
-                    className="-z-0"
-                    center={[
-                      selectedRequest.OfferedBook.location?.latitude ?? 0 ?? 0,
-                      selectedRequest.OfferedBook.location?.longitude ?? 0,
-                    ]}
-                    zoom={13}
-                    style={{ height: "400px", width: "100%" }}
-                  >
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    <Marker
-                      position={[
-                        selectedRequest.OfferedBook.location?.latitude ??
-                          0 ??
-                          0,
-                        selectedRequest.OfferedBook.location?.longitude ?? 0,
-                      ]}
-                      icon={customIcon}
-                    >
-                      <Popup>This is the location!</Popup>
-                    </Marker>
-                  </MapContainer>
-                )}
               </CardContent>
             </Card>
           )}
