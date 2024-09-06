@@ -3,7 +3,6 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/auth"; // Adjust the import path as needed
-import AddBookForm from "../components/AddBookForm";
 import Search from "../components/Search";
 import { Button } from "@/components/ui/button";
 import MyBooks from "../components/MyBooks";
@@ -19,6 +18,12 @@ import {
 import RequestsMade from "../components/RequestsMade";
 import RequestsReceived from "../components/RequestsReceived";
 import NotFound from "../not-found";
+import dynamic from 'next/dynamic';
+
+const AddBookForm = dynamic(() => import('../components/AddBookForm'), { 
+  ssr: false 
+});
+
 
 export default function Dashboard() {
   const { isAuthenticated, token, logout, validateToken } = useAuth();

@@ -59,7 +59,6 @@ const AddBookForm = () => {
   const handleLocationSelect = (lat: number, lng: number) => {
     setLocation({ lat, lng });
     console.log("Selected Location:", lat, lng);
-    // You can handle the API call here
   };
 
   const handleSuccessResponse = () => {

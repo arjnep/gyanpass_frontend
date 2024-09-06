@@ -121,7 +121,6 @@ export default function BookDetailsPage() {
 
   const handleDelete = async () => {
     setIsDeleteSuccessDialogOpen(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDeleteSuccessDialogClose = () => {
