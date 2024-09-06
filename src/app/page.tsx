@@ -4,6 +4,8 @@ import { useAuth } from './context/auth'; // Adjust the import path as needed
 import { useRouter } from 'next/navigation';
 import { SVGProps, useEffect } from 'react';
 import Link from 'next/link';
+import BookCard from './components/BookCard';
+import { Button } from '@/components/ui/button';
 
 
 export default function Home() {
@@ -64,58 +66,34 @@ export default function Home() {
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-12">
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <img
-                  src="/placeholder.svg"
-                  alt="Book Cover"
-                  className="aspect-[3/4] overflow-hidden rounded-lg object-cover"
-                  width="150"
-                  height="200"
-                />
-                <div className="text-center">
-                  <h3 className="text-lg font-bold">The Great Gatsby</h3>
-                  <p className="text-muted-foreground">F. Scott Fitzgerald</p>
-                </div>
-              </div>
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <img
-                  src="/placeholder.svg"
-                  alt="Book Cover"
-                  className="aspect-[3/4] overflow-hidden rounded-lg object-cover"
-                  width="150"
-                  height="200"
-                />
-                <div className="text-center">
-                  <h3 className="text-lg font-bold">To Kill a Mockingbird</h3>
-                  <p className="text-muted-foreground">Harper Lee</p>
-                </div>
-              </div>
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <img
-                  src="/placeholder.svg"
-                  alt="Book Cover"
-                  className="aspect-[3/4] overflow-hidden rounded-lg object-cover"
-                  width="150"
-                  height="200"
-                />
-                <div className="text-center">
-                  <h3 className="text-lg font-bold">1984</h3>
-                  <p className="text-muted-foreground">George Orwell</p>
-                </div>
-              </div>
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <img
-                  src="/placeholder.svg"
-                  alt="Book Cover"
-                  className="aspect-[3/4] overflow-hidden rounded-lg object-cover"
-                  width="150"
-                  height="200"
-                />
-                <div className="text-center">
-                  <h3 className="text-lg font-bold">Pride and Prejudice</h3>
-                  <p className="text-muted-foreground">Jane Austen</p>
-                </div>
-              </div>
+              <BookCard title='The Great Gatsby' author='F. Scott Fitzgerald' genre='Novel' coverUrl='/placeholder.svg'>
+              <Link href={`/auth`}>
+                <Button variant="outline" size="sm">
+                  View
+                </Button>
+                </Link>
+              </BookCard>
+              <BookCard title='To Kill a Mockingbird' author='Harper Lee' genre='Novel' coverUrl='/placeholder.svg'>
+              <Link href={`/auth`}>
+                <Button variant="outline" size="sm">
+                  View
+                </Button>
+                </Link>
+              </BookCard>
+              <BookCard title='1984' author='George Orwell' genre='Dystopian' coverUrl='/placeholder.svg'>
+              <Link href={`/auth`}>
+                <Button variant="outline" size="sm">
+                  View
+                </Button>
+                </Link>
+              </BookCard>
+              <BookCard title='Pride and Prejudice' author='Jane Austen' genre='Novel' coverUrl='/placeholder.svg'>
+              <Link href={`/auth`}>
+                <Button variant="outline" size="sm">
+                  View
+                </Button>
+                </Link>
+              </BookCard>
             </div>
           </div>
         </section>
