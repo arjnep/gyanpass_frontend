@@ -48,7 +48,7 @@ export default function MapWithSearchBar({ onLocationSelect }: MapProps) {
         .catch((err: any) => console.error("Error searching location", err))
         .finally(() => setSearchTrigger(false)); // Reset the search trigger
     }
-  }, [searchTrigger, onLocationSelect, searchQuery]);
+  }, [searchTrigger, searchQuery]);
 
   const LocationMarker = () => {
     const map = useMapEvents({

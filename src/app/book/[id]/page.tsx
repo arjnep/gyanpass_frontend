@@ -67,7 +67,7 @@ export default function BookDetailsPage() {
     } else if (err.type == "AUTHORIZATION") {
       setIsSessionDialogOpen(true);
     } else if (err.type == "NOT_FOUND") {
-      return <NotFound />;
+      setError("Not Found!");
     } else if (err.type == "INTERNAL") {
       setError("Internal Server Error!");
     } else {
@@ -108,7 +108,7 @@ export default function BookDetailsPage() {
       await fetchBookDetails();
     };
     loadBook();
-  }, [id, token, fetchBookDetails()]);
+  }, [id, token]);
 
   const handleEdit = async () => {
     await fetchBookDetails();

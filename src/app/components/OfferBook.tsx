@@ -140,7 +140,7 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
 
   useEffect(() => {
     fetchBooks();
-  }, [token, fetchBooks()]);
+  }, [token]);
 
   return (
     <>
