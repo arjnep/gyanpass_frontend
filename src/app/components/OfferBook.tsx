@@ -140,7 +140,7 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
 
   useEffect(() => {
     fetchBooks();
-  }, [token]);
+  }, [token, fetchBooks()]);
 
   return (
     <>
@@ -149,8 +149,7 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
           <DialogHeader>
             <DialogTitle>Choose a Book to Offer</DialogTitle>
             <DialogDescription>
-              Select a book from the list to offer for{" "}
-              <b>"{requested_book.title}"</b>
+              Select a book from the list to offer for {`<b>${requested_book.title}</b>`}
             </DialogDescription>
           </DialogHeader>
           {loading && <Loading message="Loading..." />}
@@ -170,7 +169,7 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
               books
                 .filter((book) => book.is_active)
                 .map((book) => (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-4" key={book.id}>
                     <BookCard
                       key={book.id}
                       title={book.title}

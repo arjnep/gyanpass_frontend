@@ -134,21 +134,21 @@ export default function Home() {
                 <SearchIcon className="h-12 w-12 text-primary" />
                 <h3 className="text-xl font-bold">1. Search for Books</h3>
                 <p className="text-muted-foreground">
-                  Browse our selection of available books and find the ones you're interested in.
+                  Browse our selection of available books and find the ones you are interested in.
                 </p>
               </div>
               <div className="flex flex-col items-center justify-center space-y-2">
                 <ReplyIcon className="h-12 w-12 text-primary" />
                 <h3 className="text-xl font-bold">2. Request a Book</h3>
                 <p className="text-muted-foreground">
-                  Submit a request to exchange a book you have for the one you'd like to read.
+                  Submit a request to exchange a book you have for the one you would like to read.
                 </p>
               </div>
               <div className="flex flex-col items-center justify-center space-y-2">
                 <CurrencyIcon className="h-12 w-12 text-primary" />
                 <h3 className="text-xl font-bold">3. Exchange Books</h3>
                 <p className="text-muted-foreground">
-                  Once your request is approved, we'll facilitate the book exchange process.
+                  Once your request is approved, we will facilitate the book exchange process.
                 </p>
               </div>
             </div>

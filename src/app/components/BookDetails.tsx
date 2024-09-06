@@ -136,7 +136,7 @@ export default function BookDetails({
       checkRequestStatus();
       console.log(isRequester);
     }
-  }, [user, book.id, token]);
+  }, [user, book.id, token, isRequester]);
 
   useEffect(() => {
     if (user && book.owner.user_id === user.userID) {

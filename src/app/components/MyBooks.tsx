@@ -88,7 +88,7 @@ const MyBooks: React.FC = () => {
 
   useEffect(() => {
     fetchBooks();
-  }, [token]);
+  }, [token, fetchBooks()]);
 
   //   if (loading) return <p>Loading...</p>;
 

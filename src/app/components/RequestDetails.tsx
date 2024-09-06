@@ -514,7 +514,7 @@ export default function RequestDetails({
                 >
                   {selectedRequest.requested_by_confirmed &&
                   selectedRequest.requested_to_confirmed ? (
-                    "exchanged"
+                    <div>exchanged</div>
                   ) : selectedRequest.requested_by_confirmed ? (
                     <div>
                       <div>
@@ -542,34 +542,6 @@ export default function RequestDetails({
                   )}
                 </div>
               </div>
-              {/* {isRequester && selectedRequest.status == "accepted" ? (
-                <div className="flex flex-col justify-center gap-6 max-w-fit m-auto sm:m-0">
-                  <Button onClick={() => handleConfirmClick(request)}size="lg">
-                    Confirm
-                  </Button>
-                </div>
-              ) : isRequester ? (
-                <div className="flex flex-col justify-center gap-6 max-w-fit m-auto sm:m-0">
-                <Button onClick={() => handleCancelClick(request)} size="lg">
-                    Cancel Request
-                  </Button>
-                  </div>
-              ) : selectedRequest.status == "accepted" ? (
-                <div className="flex flex-col justify-center gap-6 max-w-fit m-auto sm:m-0">
-                  <Button onClick={() => handleConfirmClick(request)}size="lg">
-                    Confirm
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-6 max-w-fit m-auto sm:m-0">
-                  <Button onClick={() => handleAcceptClick(request)} size="lg">
-                    Accept Request
-                  </Button>
-                  <Button onClick={() => handleDeclineClick(request)} size="lg">
-                    Decline Request
-                  </Button>
-                </div>
-              )} */}
               {
                 // Case 1: Request is pending and neither party has confirmed
                 !selectedRequest.requested_by_confirmed &&
@@ -733,10 +705,9 @@ export default function RequestDetails({
                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               </AlertDialogHeader>
               <AlertDialogDescription>
-                Are you sure you want to accept this exchange request? <br />{" "}
+                Are you sure you want to accept this exchange request? <br />
                 <br />
-                All the remaining requests for your book{" "}
-                <strong>"{request.RequestedBook.title}"</strong> will be
+                All the remaining requests for your book{`<strong>${request.RequestedBook.title}</strong>`} will be
                 declined.
               </AlertDialogDescription>
               <AlertDialogFooter className="sm:space-x-6 sm:justify-center">

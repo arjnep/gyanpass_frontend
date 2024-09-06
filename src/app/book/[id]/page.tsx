@@ -108,7 +108,7 @@ export default function BookDetailsPage() {
       await fetchBookDetails();
     };
     loadBook();
-  }, [id, token]);
+  }, [id, token, fetchBookDetails()]);
 
   const handleEdit = async () => {
     await fetchBookDetails();
