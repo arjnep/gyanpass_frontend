@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import SuccessAnimation from "@/components/custom/Success";
-import Map from "./Map";
+import MapWithSearchBar from "./Map";
 import { customIcon } from "./Map";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
@@ -192,7 +192,7 @@ const AddBookForm = () => {
               (Select a location on the map)
             </small>
             <div>
-              <Map onLocationSelect={handleLocationSelect} />
+              <MapWithSearchBar onLocationSelect={handleLocationSelect} />
             </div>
           </div>
 

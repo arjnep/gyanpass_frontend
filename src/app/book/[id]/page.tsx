@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Loading from "../../../components/custom/Loading";
 import { Link } from "lucide-react";
-import BookDetails from "@/app/components/BookDetails";
 import { useAuth } from "@/app/context/auth";
 import SuccessAnimation from "@/components/custom/Success";
 
@@ -21,6 +20,11 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import NotFound from "@/app/not-found";
+import dynamic from 'next/dynamic';
+
+const BookDetails= dynamic(() => import('@/app/components/BookDetails'), { 
+  ssr: false 
+});
 
 interface Book {
   id: number;
@@ -38,7 +42,7 @@ interface Book {
     phone: string;
   };
   location: {
-    address: number;
+    address: string;
     latitude: number;
     longitude: number;
   };

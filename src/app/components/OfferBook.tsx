@@ -33,7 +33,7 @@ interface BookDetailsProps {
       phone: string;
     };
     location: {
-      address: number;
+      address: string;
       latitude: number;
       longitude: number;
     };

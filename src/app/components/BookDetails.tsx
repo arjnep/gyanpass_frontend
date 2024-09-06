@@ -45,6 +45,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import MapWithSearchBar, { customIcon } from "./Map";
 
 interface BookDetailsProps {
   book: {
@@ -63,7 +65,7 @@ interface BookDetailsProps {
       phone: string;
     };
     location: {
-      address: number;
+      address: string;
       latitude: number;
       longitude: number;
     };
@@ -83,10 +85,19 @@ export default function BookDetails({
   const { user } = useAuth();
   const [isOwner, setIsOwner] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isRequester, setIsRequester] = useState(false);
-  const [isRequestAcceptedOrPending, setIsRequestAcceptedOrPending] = useState<string | null>(null);
-  const [isRequestExchanged, setIsRequestExchanged] = useState<string | null>(null);
+  const [isRequestAcceptedOrPending, setIsRequestAcceptedOrPending] = useState<
+    string | null
+  >(null);
+  const [isRequestExchanged, setIsRequestExchanged] = useState<string | null>(
+    null
+  );
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
+    { lat: 27.700769, lng: 85.30014 }
+  );
+  const [changeLocation, setChangeLocation] = useState(false);
   const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -117,13 +128,13 @@ export default function BookDetails({
           );
           const pendingOrAccepted = data.requests.some(
             (request: any) => request.status === ("pending" || "accepted")
-          )
+          );
           const pendingExchanged = data.requests.some(
-            (request: any) => request.status === ("exchanged")
-          )
+            (request: any) => request.status === "exchanged"
+          );
           setIsRequester(hasRequested);
-          setIsRequestAcceptedOrPending(pendingOrAccepted)
-          setIsRequestExchanged(pendingExchanged)
+          setIsRequestAcceptedOrPending(pendingOrAccepted);
+          setIsRequestExchanged(pendingExchanged);
         } else {
           console.error("Failed to fetch exchange request status");
         }
@@ -156,6 +167,21 @@ export default function BookDetails({
       setEditError("Internal Server Error!");
     } else {
       setEditError("Something unknown went wrong!");
+    }
+  };
+
+  const handleLocationErrorResponse = (errorData: any) => {
+    const err = errorData.error;
+    console.log(errorData.error);
+    console.log(errorData.error.type);
+    if (err.type == "BAD_REQUEST") {
+      setLocationError("Bad Request!");
+    } else if (err.type == "AUTHORIZATION") {
+      setIsSessionDialogOpen(true);
+    } else if (err.type == "INTERNAL") {
+      setLocationError("Internal Server Error!");
+    } else {
+      setLocationError("Something unknown went wrong!");
     }
   };
 
@@ -192,6 +218,46 @@ export default function BookDetails({
   const closeOfferBookDialog = () => {
     setIsOfferBookDialogOpen(false);
     setSelectedBook(null);
+  };
+
+  const handleLocationSelect = (lat: number, lng: number) => {
+    setSelectedBook(book)
+    setLocation({ lat, lng });
+    console.log("Selected Location:", lat, lng);
+  };
+
+  const handleLocationChange = async () => {
+    if (selectedBook && location) {
+      try {
+        const response = await fetch(
+          `https://golden-goblin-master.ngrok-free.app/api/books/${selectedBook.id}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "1",
+            },
+            body: JSON.stringify({
+              latitude: location.lat,
+              longitude: location.lng,
+            }),
+          }
+        );
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.log(errorData);
+          handleLocationErrorResponse(errorData);
+          return;
+        }
+        setChangeLocation(false);
+        setLocationError(null);
+        onEdit();
+      } catch (err: any) {
+        setLocationError(err.message);
+        console.error("Failed to change pickup location.", err);
+      }
+    }
   };
 
   const handleEditSubmit = async () => {
@@ -423,21 +489,19 @@ export default function BookDetails({
                   <TooltipContent
                     sideOffset={15}
                     className="bg-primary text-primary-foreground text-center"
-                  > {isRequestAcceptedOrPending ? (
-                    <p>
-                      Your have an ongoing request process for this book
-                      <br />
-                      Please Check Requests Made or Received
-                    </p>
-                  ): isRequestExchanged ? (
-                    <p>
-                      This Book is already exchanged.
-                    </p>
-                  ) : (
+                  >
+                    {" "}
+                    {isRequestAcceptedOrPending ? (
                       <p>
-                        This Book is Not Active For Exchange.
+                        Your have an ongoing request process for this book
+                        <br />
+                        Please Check Requests Made or Received
                       </p>
-                  )}
+                    ) : isRequestExchanged ? (
+                      <p>This Book is already exchanged.</p>
+                    ) : (
+                      <p>This Book is Not Active For Exchange.</p>
+                    )}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -456,12 +520,62 @@ export default function BookDetails({
         <Card>
           <CardContent className="grid gap-4">
             <div className="font-medium">Map</div>
-            <div className="aspect-auto bg-muted rounded-lg" />
+            {locationError && (
+                <div className="text-red-500 text-lg text-center">
+                  {locationError}
+                </div>
+              )}
+            {changeLocation ? (
+              <MapWithSearchBar onLocationSelect={handleLocationSelect} />
+            ) : (
+              book.location && (
+                <MapContainer
+                  className="-z-0"
+                  center={[book.location.latitude, book.location.longitude]}
+                  zoom={13}
+                  style={{ height: "400px", width: "100%" }}
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  />
+                  <Marker
+                    position={[book.location.latitude, book.location.longitude]}
+                    icon={customIcon}
+                  >
+                    <Popup>This is the location!</Popup>
+                  </Marker>
+                </MapContainer>
+              )
+            )}
           </CardContent>
           <CardFooter>
-            <Button size="lg" className="w-auto m-auto">
-              Change Pickup Location
-            </Button>
+            {changeLocation ? (
+              <div className="flex flex-wrap gap-10 justify-around">
+                <Button
+                  size="lg"
+                  className="w-auto m-auto"
+                  onClick={handleLocationChange}
+                >
+                  Save Changes
+                </Button>
+                <Button
+                  size="lg"
+                  className="w-auto m-auto"
+                  onClick={() => setChangeLocation(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            ) : (
+              <Button
+                size="lg"
+                className="w-auto m-auto"
+                onClick={() => setChangeLocation(true)}
+              >
+                Change Pickup Location
+              </Button>
+            )}
           </CardFooter>
         </Card>
       )}
