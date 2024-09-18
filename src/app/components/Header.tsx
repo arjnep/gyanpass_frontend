@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const Header = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const [isLogoutDialogOpen, setisLogoutDialogOpen] = useState(false);
 
   const handleLogout = () => {
@@ -69,7 +69,10 @@ const Header = () => {
             <DropdownMenuTrigger asChild>
               <Avatar className="h-9 w-9 cursor-pointer">
                 <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
-                <AvatarFallback>JP</AvatarFallback>
+                <AvatarFallback>
+                  {user.first_name[0]}
+                  {user.last_name[0]}
+                </AvatarFallback>
                 <span className="sr-only">Toggle user menu</span>
               </Avatar>
             </DropdownMenuTrigger>
