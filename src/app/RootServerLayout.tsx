@@ -25,6 +25,9 @@ export default function RootServerLayout({
 }: RootServerLayoutProps) {
   return (
     <html className="scroll-smooth" lang="en">
+      <head>
+        <title>GyanPass | Pass Your Knowledge</title>
+      </head>
       <body className={poppins.className}>
         <div className="flex flex-col min-h-[100dvh]">
           {showHeader && <Header />}
