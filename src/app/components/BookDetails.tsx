@@ -112,7 +112,7 @@ export default function BookDetails({
     const checkRequestStatus = async () => {
       try {
         const response = await fetch(
-          `https://golden-goblin-master.ngrok-free.app/api/exchange/requests/?bookID=${book.id}`,
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/?bookID=${book.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -230,7 +230,7 @@ export default function BookDetails({
     if (selectedBook && location) {
       try {
         const response = await fetch(
-          `https://golden-goblin-master.ngrok-free.app/api/books/${selectedBook.id}`,
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/books/${selectedBook.id}`,
           {
             method: "PUT",
             headers: {
@@ -265,7 +265,7 @@ export default function BookDetails({
       try {
         // Example API call to update the book
         const response = await fetch(
-          `https://golden-goblin-master.ngrok-free.app/api/books/${selectedBook.id}`,
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/books/${selectedBook.id}`,
           {
             method: "PUT",
             headers: {
@@ -296,7 +296,7 @@ export default function BookDetails({
     if (selectedBook) {
       try {
         const response = await fetch(
-          `https://golden-goblin-master.ngrok-free.app/api/books/${selectedBook.id}`,
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/books/${selectedBook.id}`,
           {
             method: "DELETE",
             headers: {

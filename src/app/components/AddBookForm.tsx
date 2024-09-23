@@ -28,12 +28,17 @@ const AddBookForm = () => {
   const [genre, setGenre] = useState("");
   const [address, setAddress] = useState("");
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
-    {lat: 27.700769, lng: 85.30014}
+    { lat: 27.700769, lng: 85.30014 }
   );
   const [coverUrl, setCoverUrl] = useState("");
+  const titleRef = useRef<HTMLInputElement | null>(null);
+  const authorRef = useRef<HTMLInputElement | null>(null);
+  const genreRef = useRef<HTMLInputElement | null>(null);
+  const addressRef = useRef<HTMLInputElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [isAddBookDialogOpen, setIsAddBookDialogOpen] = useState(false);
   const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
@@ -55,6 +60,38 @@ const AddBookForm = () => {
 
     checkToken();
   }, [validateToken]);
+
+  const validateForm = () => {
+    if (!title) {
+      setValidationError("All fields are necessary");
+      titleRef.current?.focus();
+      return;
+    }
+    if (!author) {
+      setValidationError("All fields are necessary");
+      authorRef.current?.focus();
+      return;
+    }
+    if (!genre) {
+      setValidationError("All fields are necessary");
+      genreRef.current?.focus();
+      return;
+    }
+    if (!address) {
+      setValidationError("All fields are necessary");
+      addressRef.current?.focus();
+      return;
+    }
+    if (!coverUrl) {
+      setValidationError("All fields are necessary");
+      fileInputRef.current?.focus();
+      console.log(location);
+      return;
+    }
+    setValidationError(null);
+    // Proceed with the dialog opening if all validations pass
+    setIsAddBookDialogOpen(true);
+  };
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setLocation({ lat, lng });
@@ -104,23 +141,26 @@ const AddBookForm = () => {
     setError(null);
 
     try {
-      const response = await fetch("https://golden-goblin-master.ngrok-free.app/api/books/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "1",
-        },
-        body: JSON.stringify({
-          title,
-          author,
-          description,
-          genre,
-          address,
-          latitude: location?.lat,
-          longitude: location?.lng,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/books/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            "ngrok-skip-browser-warning": "1",
+          },
+          body: JSON.stringify({
+            title,
+            author,
+            description,
+            genre,
+            address,
+            latitude: location?.lat,
+            longitude: location?.lng,
+          }),
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         handleErrorResponse(errorData);
@@ -141,9 +181,15 @@ const AddBookForm = () => {
       <form>
         <CardContent className="space-y-4">
           <div className="space-y-2">
+            {validationError && (
+              <div className="px-10 text-center text-red-500">
+                {validationError}
+              </div>
+            )}
             <Label htmlFor="book-title">Book Title</Label>
             <Input
               id="book-title"
+              ref={titleRef}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter book title"
@@ -154,6 +200,7 @@ const AddBookForm = () => {
             <Label htmlFor="book-author">Book Author</Label>
             <Input
               id="book-author"
+              ref={authorRef}
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               placeholder="Enter book author"
@@ -172,6 +219,7 @@ const AddBookForm = () => {
             <Label htmlFor="book-genre">Book Genre</Label>
             <Input
               id="book-genre"
+              ref={genreRef}
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
               placeholder="Enter book genre"
@@ -181,6 +229,7 @@ const AddBookForm = () => {
             <Label htmlFor="book-description">Book Area</Label>
             <Input
               id="book-address"
+              ref={addressRef}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="Enter city or area to search you book"
@@ -210,7 +259,7 @@ const AddBookForm = () => {
           <Button
             type="button"
             className="w-full"
-            onClick={() => setIsAddBookDialogOpen(true)}
+            onClick={() => validateForm()}
           >
             Add Book
           </Button>
@@ -261,22 +310,24 @@ const AddBookForm = () => {
                 <p className="col-span-3">{address}</p>
               </div>
               {location && (
-              <div className="flex gap-2">
-                <MapContainer
-                  center={[location.lat, location.lng]}
-                  zoom={13}
-                  style={{ height: "400px", width: "100%" }}
-                >
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  />
-                  <Marker position={[location?.lat, location?.lng]} icon={customIcon}>
-                    <Popup>This is the location!</Popup>
-                  </Marker>
-
-                </MapContainer>
-              </div>
+                <div className="flex gap-2">
+                  <MapContainer
+                    center={[location.lat, location.lng]}
+                    zoom={13}
+                    style={{ height: "400px", width: "100%" }}
+                  >
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    <Marker
+                      position={[location?.lat, location?.lng]}
+                      icon={customIcon}
+                    >
+                      <Popup>This is the location!</Popup>
+                    </Marker>
+                  </MapContainer>
+                </div>
               )}
             </div>
             <DialogFooter>
@@ -329,7 +380,8 @@ const AddBookForm = () => {
                 <SuccessAnimation />
                 <p className="text-xl text-center text-gray-950">
                   <strong>
-                    {title}<br></br>
+                    {title}
+                    <br></br>
                   </strong>
                   Book Successfully Added!
                 </p>

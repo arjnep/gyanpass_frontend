@@ -82,7 +82,7 @@ export default function BookDetailsPage() {
   const fetchBookDetails = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://golden-goblin-master.ngrok-free.app/api/books/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/books/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`, // Use your token storage mechanism
           "ngrok-skip-browser-warning": "1",

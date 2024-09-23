@@ -73,7 +73,7 @@ export default function Search() {
       }
 
       const response = await fetch(
-        `https://golden-goblin-master.ngrok-free.app/api/books/search?${query}`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/books/search?${query}`,
         {
           headers: {
             "Content-Type": "application/json",

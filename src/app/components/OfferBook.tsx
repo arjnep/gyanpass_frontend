@@ -76,7 +76,7 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
 
   const fetchBooks = async () => {
     try {
-      const response = await fetch("https://golden-goblin-master.ngrok-free.app/api/books/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/books/`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "ngrok-skip-browser-warning": "1",
@@ -110,7 +110,7 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
   ) => {
     try {
       const response = await fetch(
-        `https://golden-goblin-master.ngrok-free.app/api/exchange/requests/`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/`,
         {
           method: "POST",
           headers: {

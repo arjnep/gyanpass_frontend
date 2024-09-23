@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return false
     }
     try {
-      const response = await fetch('https://golden-goblin-master.ngrok-free.app/api/auth/validate-token', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/validate-token`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

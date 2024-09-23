@@ -64,7 +64,7 @@ const MyBooks: React.FC = () => {
 
   const fetchBooks = async () => {
     try {
-      const response = await fetch("https://golden-goblin-master.ngrok-free.app/api/books/", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/books/`, {
         headers: {
           Authorization: `Bearer ${token}`, // Use your token storage mechanism
           "ngrok-skip-browser-warning": "1",

@@ -159,7 +159,7 @@ export default function RequestDetails({
   const handleConfirm = async () => {
     try {
       const response = await fetch(
-        `https://golden-goblin-master.ngrok-free.app/api/exchange/requests/${request.id}/confirm`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request.id}/confirm`,
         {
           method: "POST",
           headers: {
@@ -196,7 +196,7 @@ export default function RequestDetails({
   const handleAccept = async () => {
     try {
       const response = await fetch(
-        `https://golden-goblin-master.ngrok-free.app/api/exchange/requests/${request.id}/accept`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request.id}/accept`,
         {
           method: "POST",
           headers: {
@@ -227,7 +227,7 @@ export default function RequestDetails({
   const handleCancel = async () => {
     try {
       const response = await fetch(
-        `https://golden-goblin-master.ngrok-free.app/api/exchange/requests/${request.id}/delete`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request.id}/delete`,
         {
           method: "DELETE",
           headers: {
@@ -255,7 +255,7 @@ export default function RequestDetails({
   const handleDecline = async () => {
     try {
       const response = await fetch(
-        `https://golden-goblin-master.ngrok-free.app/api/exchange/requests/${request.id}/decline`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request.id}/decline`,
         {
           method: "POST",
           headers: {

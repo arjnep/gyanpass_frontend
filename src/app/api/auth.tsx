@@ -1,8 +1,6 @@
 // utils/api.ts
 import axios from 'axios';
 
-const API_BASE_URL = 'https://golden-goblin-master.ngrok-free.app/api/auth';
-
 export async function registerUser(userData: {
   first_name: string;
   last_name: string;
@@ -11,7 +9,7 @@ export async function registerUser(userData: {
   password: string;
 }) {
   try {
-    const response = await axios.post(`${API_BASE_URL}/register`, userData, {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/register`, userData, {
       withCredentials: true, // This allows the backend to set cookies
     });
     return response.data; // Handle the tokens or any data returned
@@ -26,7 +24,7 @@ export async function loginUser(userData: {
   password: string;
 }) {
   try {
-    const response = await axios.post(`${API_BASE_URL}/login`, userData, {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`, userData, {
       withCredentials: true,
     });
     return response.data; // Handle the tokens or any data returned

@@ -57,7 +57,7 @@ const RequestsMade: React.FC = () => {
   const fetchRequestsMade = async () => {
     try {
       const response = await fetch(
-        "https://golden-goblin-master.ngrok-free.app/api/exchange/requests/made",
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/made`,
         {
           method: "GET",
           headers: {
@@ -79,17 +79,18 @@ const RequestsMade: React.FC = () => {
     } catch (err: any) {
       setRequestsMadeError(err.message);
       console.error("Error fetching requests made:", err);
+    } finally {
+      setLoading(false)
     }
   };
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchRequestsMade();
-      setLoading(false);
     } else {
       setLoading(false); // No need to fetch if not authenticated
     }
-  }, [isAuthenticated, token]);
+  }, [isAuthenticated, token, loading]);
 
   return (
     <Card className="w-full max-w-7xl mx-auto">

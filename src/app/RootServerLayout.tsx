@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Poppins } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/custom/theme-provider";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -29,12 +30,19 @@ export default function RootServerLayout({
         <title>GyanPass | Pass Your Knowledge</title>
       </head>
       <body className={poppins.className}>
+      <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
         <div className="flex flex-col min-h-[100dvh]">
           {showHeader && <Header />}
           {children}
           <Footer />
         </div>
         <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
