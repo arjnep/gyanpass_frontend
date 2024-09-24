@@ -23,6 +23,7 @@ interface BookDetailsProps {
     author: string;
     genre: string;
     description: string;
+    image_url: string
     user_id: number;
     owner: {
       user_id: number;
@@ -175,7 +176,7 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
                       title={book.title}
                       author={book.author}
                       genre={book.genre} // Assuming you have genre here
-                      coverUrl={"/placeholder.svg"} // Assuming coverUrl is part of the book object
+                      coverUrl={book.image_url} // Assuming coverUrl is part of the book object
                     >
                       <Button
                         variant="outline"

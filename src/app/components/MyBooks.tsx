@@ -23,6 +23,7 @@ interface Book {
   author: string;
   genre: string;
   description: string;
+  image_url: string;
   user_id: string;
   owner: {
     uid: string;
@@ -111,7 +112,7 @@ const MyBooks: React.FC = () => {
                 title={book.title}
                 author={book.author}
                 genre={book.genre}
-                coverUrl="/placeholder.svg"
+                coverUrl={book.image_url}
               >
                 <Link href={`/book/${book.id}`}>
                 <Button variant="outline" size="sm">

@@ -21,6 +21,7 @@ interface Request {
     title: string;
     author: string;
     genre: string;
+    image_url: string;
     owner: {
       first_name: string;
       last_name: string;
@@ -111,7 +112,7 @@ const RequestsReceived: React.FC = () => {
                 title={request.OfferedBook.title}
                 author={request.OfferedBook.author}
                 genre={request.OfferedBook.genre}
-                coverUrl={"/placeholder.svg"}
+                coverUrl={request.OfferedBook.image_url}
               >
                 <Link href={`/request/${request.id}`}>
                   <Button size="lg">View</Button>

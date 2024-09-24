@@ -22,6 +22,7 @@ interface Book {
   author: string;
   genre: string;
   description: string;
+  image_url: string;
   owner: {
     user_id: number;
     first_name: string;
@@ -151,7 +152,7 @@ export default function Search() {
                 title={book.title}
                 author={book.author}
                 genre={book.genre}
-                coverUrl="/placeholder.svg"
+                coverUrl={book.image_url}
               >
                 <Link href={`/book/${book.id}`}>
                 <Button variant="outline" size="sm">

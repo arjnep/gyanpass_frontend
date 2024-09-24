@@ -55,6 +55,7 @@ interface BookDetailsProps {
     author: string;
     genre: string;
     description: string;
+    image_url: string;
     user_id: number;
     owner: {
       user_id: number;
@@ -347,14 +348,11 @@ export default function BookDetails({
         <Card className="p-6">
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Book Details</h2>
-            <div className="w-full h-64 bg-gray-200 rounded-lg">
+            <div className="w-full h-64 rounded-lg">
               <img
-                src="/placeholder.svg"
+                src={book.image_url}
                 alt="Book Cover"
-                className="w-full h-full object-cover rounded-lg"
-                width="256"
-                height="256"
-                style={{ aspectRatio: "256/256", objectFit: "cover" }}
+                className="w-auto h-full m-auto object-cover rounded-lg"
               />
             </div>
             <div className="flex flex-col gap-3">

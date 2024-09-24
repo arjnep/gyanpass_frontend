@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import Loading from "@/components/custom/Loading";
 import { ThemeToggle } from "@/components/custom/ThemeToggle";
+import { useRouter } from "next/navigation";
 
 interface Notification {
   id: number;
@@ -48,6 +49,8 @@ const Header = () => {
   const [notificationError, setNotificationError] = useState<string | null>(
     null
   );
+
+  const router = useRouter();
 
   const handleNotificationsErrorResponse = (errorData: any) => {
     const err = errorData.error;
@@ -325,11 +328,11 @@ const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="mr-5">
-                <DropdownMenuItem>
-                  <Link href="/account">My Account</Link>
+                <DropdownMenuItem className="cursor-pointer" onClick={() => router.push("/account")}>
+                  My Account
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setisLogoutDialogOpen(true)}>
+                <DropdownMenuItem className="cursor-pointer" onClick={() => setisLogoutDialogOpen(true)}>
                   Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>

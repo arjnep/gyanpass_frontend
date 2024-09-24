@@ -15,11 +15,11 @@ const BookCard = ({ title, author, genre, coverUrl, children }: BookCardProps) =
     <CardContent className="flex flex-col items-center text-left justify-center p-6">
       <Image
         src={coverUrl}
-        width={128}
-        height={128}
+        width={164}
+        height={164}
         alt="Cover"
         className="rounded-lg"
-        style={{ aspectRatio: "128/128", objectFit: "cover" }}
+        style={{ aspectRatio: "164/164", objectFit: "cover" }}
       />
       <h3 className="mt-4 font-semibold text-wrap text-center">{title}</h3>
       <small className="text-muted-foreground"><b>Author: </b>{author}</small>

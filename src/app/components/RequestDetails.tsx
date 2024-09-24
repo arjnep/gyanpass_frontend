@@ -51,6 +51,7 @@ interface Book {
   author: string;
   genre: string;
   description: string;
+  image_url: string;
   user_id: string;
   owner: {
     uid: string;
@@ -288,12 +289,9 @@ export default function RequestDetails({
       <div className="font-medium">{label}</div>
       <div className="flex flex-wrap gap-10">
         <img
-          src="/placeholder.svg"
+          src={book.image_url}
           alt={book.title}
-          width={200}
-          height={300}
-          className="rounded-lg"
-          style={{ aspectRatio: "200/300", objectFit: "cover" }}
+          className="rounded-lg w-auto h-72 object-cover"
         />
         <div className="flex flex-col gap-3 max-w-sm">
           {/* <div>{book.title}</div> */}
@@ -679,7 +677,7 @@ export default function RequestDetails({
               <AlertDialogDescription>
                 Are you sure you want to accept this exchange request? <br />
                 <br />
-                All the remaining requests for your book{`<strong>${request.RequestedBook.title}</strong>`} will be
+                All the remaining requests for your book <strong>{request.RequestedBook.title}</strong> will be
                 declined.
               </AlertDialogDescription>
               <AlertDialogFooter className="sm:space-x-6 sm:justify-center">

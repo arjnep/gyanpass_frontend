@@ -20,6 +20,8 @@ import SuccessAnimation from "@/components/custom/Success";
 import MapWithSearchBar from "./Map";
 import { customIcon } from "./Map";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { storage } from "../../lib/firebase"; // Import Firebase storage
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const AddBookForm = () => {
   const [title, setTitle] = useState("");
@@ -42,8 +44,9 @@ const AddBookForm = () => {
   const [isAddBookDialogOpen, setIsAddBookDialogOpen] = useState(false);
   const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const { token, logout, validateToken } = useAuth();
+  const { token, logout, validateToken, user } = useAuth();
 
   useEffect(() => {
     const checkToken = async () => {
@@ -130,9 +133,25 @@ const AddBookForm = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setImageFile(file);
       const fileUrl = URL.createObjectURL(file);
       setCoverUrl(fileUrl);
     }
+  };
+
+  const uploadImageToFirebaseWithBookId = async (
+    file: File,
+    bookId: string
+  ) => {
+    const fileExtension = file.name.split(".").pop(); // Get file extension
+    const fileName = `books/${bookId}.${fileExtension}`; // Create new file name with bookId as prefix
+    const storageRef = ref(storage, fileName);
+
+    // Upload file and get download URL
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadUrl = await getDownloadURL(snapshot.ref);
+
+    return downloadUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -141,7 +160,7 @@ const AddBookForm = () => {
     setError(null);
 
     try {
-      const response = await fetch(
+      const bookResponse = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/books/`,
         {
           method: "POST",
@@ -158,14 +177,38 @@ const AddBookForm = () => {
             address,
             latitude: location?.lat,
             longitude: location?.lng,
+            image_url: imageFile?.name,
           }),
         }
       );
-      if (!response.ok) {
-        const errorData = await response.json();
+
+      if (!bookResponse.ok) {
+        const errorData = await bookResponse.json();
         handleErrorResponse(errorData);
         return;
       }
+
+      const { book } = await bookResponse.json();
+
+      let uploadedCoverUrl = "";
+      if (imageFile) {
+        uploadedCoverUrl = await uploadImageToFirebaseWithBookId(
+          imageFile,
+          book.id
+        );
+      }
+
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/books/${book.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "1",
+        },
+        body: JSON.stringify({
+          image_url: uploadedCoverUrl,
+        }),
+      });
 
       setIsAddBookDialogOpen(false);
       handleSuccessResponse();
