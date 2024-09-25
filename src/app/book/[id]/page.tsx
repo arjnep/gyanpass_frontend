@@ -32,6 +32,7 @@ interface Book {
   author: string;
   genre: string;
   description: string;
+  image_url: string;
   user_id: number;
   owner: {
     user_id: number;
