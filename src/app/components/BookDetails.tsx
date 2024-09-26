@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/tooltip";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MapWithSearchBar, { customIcon } from "./Map";
+import { CircleUserRound, Mail, MapPinHouse, Phone } from "lucide-react";
 
 interface BookDetailsProps {
   book: {
@@ -221,7 +222,7 @@ export default function BookDetails({
   };
 
   const handleLocationSelect = (lat: number, lng: number) => {
-    setSelectedBook(book)
+    setSelectedBook(book);
     setLocation({ lat, lng });
     console.log("Selected Location:", lat, lng);
   };
@@ -391,10 +392,7 @@ export default function BookDetails({
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Owner Details</h2>
             <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
-                <AvatarFallback>JD</AvatarFallback>
-              </Avatar>
+              <CircleUserRound />
               <div>
                 <p className="text-lg font-semibold">
                   {book.owner.first_name} {book.owner.last_name}
@@ -404,28 +402,19 @@ export default function BookDetails({
             {isOwner && (
               <>
                 <div className="flex items-center space-x-4">
-                  <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
-                    <AvatarFallback>JD</AvatarFallback>
-                  </Avatar>
+                  <Mail />
                   <div>
                     <p className="text-lg font-semibold">{book.owner.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
-                    <AvatarFallback>JD</AvatarFallback>
-                  </Avatar>
+                  <Phone />
                   <div>
                     <p className="text-lg font-semibold">{book.owner.phone}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <Avatar>
-                    <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
-                    <AvatarFallback>JD</AvatarFallback>
-                  </Avatar>
+                  <MapPinHouse />
                   <div>
                     <p className="text-lg font-semibold">
                       {book.location.address}
@@ -515,10 +504,10 @@ export default function BookDetails({
           <CardContent className="grid gap-4">
             <div className="font-medium">Map</div>
             {locationError && (
-                <div className="text-red-500 text-lg text-center">
-                  {locationError}
-                </div>
-              )}
+              <div className="text-red-500 text-lg text-center">
+                {locationError}
+              </div>
+            )}
             {changeLocation ? (
               <MapWithSearchBar onLocationSelect={handleLocationSelect} />
             ) : (
@@ -526,7 +515,7 @@ export default function BookDetails({
                 <MapContainer
                   className="-z-0"
                   center={[book.location.latitude, book.location.longitude]}
-                  zoom={13}
+                  zoom={17}
                   style={{ height: "400px", width: "100%" }}
                 >
                   <TileLayer

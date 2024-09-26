@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input";
 import Footer from "../components/Footer";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/auth"; // Adjust the import path as needed
-import { Check, X } from "lucide-react";
+import { Check, Loader2, X } from "lucide-react";
 
 export default function AuthPage() {
   const { isAuthenticated, login, register } = useAuth();
@@ -37,6 +37,7 @@ export default function AuthPage() {
     router.push("/dashboard");
   }
 
+  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [signupData, setSignupData] = useState({
@@ -156,6 +157,8 @@ export default function AuthPage() {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginErrors(null);
+    setLoading(true);
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`,
@@ -183,12 +186,16 @@ export default function AuthPage() {
     } catch (error: any) {
       console.error("An error occurred during login:", error);
       setLoginErrors(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSignupErrors(null);
+    setLoading(true);
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/register`,
@@ -214,6 +221,8 @@ export default function AuthPage() {
     } catch (error: any) {
       console.error("An error occurred during sign-up:", error);
       setSignupErrors(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -276,8 +285,19 @@ export default function AuthPage() {
                           />
                         </div>
                         <CardFooter>
-                          <Button type="submit" className="w-full">
-                            Login
+                          <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={loading}
+                          >
+                            {loading ? (
+                              <>
+                                <Loader2 className="animate-spin inline-block mr-2" />{" "}
+                                Logging in...
+                              </>
+                            ) : (
+                              "Log In"
+                            )}
                           </Button>
                         </CardFooter>
                       </form>
@@ -385,10 +405,17 @@ export default function AuthPage() {
                           >
                             <Button
                               type="submit"
-                              disabled={!isPasswordValid}
+                              disabled={!isPasswordValid || loading}
                               className="w-full"
                             >
-                              Sign Up
+                              {loading ? (
+                                <>
+                                  <Loader2 className="animate-spin inline-block mr-2" />{" "}
+                                  Signing up...
+                                </>
+                              ) : (
+                                "Sign Up"
+                              )}
                             </Button>
                           </div>
                         </CardFooter>

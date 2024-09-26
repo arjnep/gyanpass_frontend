@@ -82,7 +82,7 @@ export default function MapWithSearchBar({ onLocationSelect }: MapProps) {
         <Input
           type="text"
           value={searchQuery}
-          placeholder="Search for a location"
+          placeholder="Naya Bazar, Kirtipur"
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <Button onClick={handleSearch} className="absolute right-2.5 top-2 h-6 w-fit">

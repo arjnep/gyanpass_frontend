@@ -233,7 +233,7 @@ const AddBookForm = () => {
               ref={titleRef}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter book title"
+              placeholder="The Stranger"
               required
             />
           </div>
@@ -244,7 +244,7 @@ const AddBookForm = () => {
               ref={authorRef}
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              placeholder="Enter book author"
+              placeholder="Albert Camus"
             />
           </div>
           <div className="space-y-2">
@@ -253,7 +253,7 @@ const AddBookForm = () => {
               id="book-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter book description"
+              placeholder="Condition: Good, Preferred Exchange: Philosophy Books"
             />
           </div>
           <div className="space-y-2">
@@ -263,17 +263,17 @@ const AddBookForm = () => {
               ref={genreRef}
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
-              placeholder="Enter book genre"
+              placeholder="Novel"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="book-description">Book Area</Label>
+            <Label htmlFor="book-description">Book Area To Search</Label>
             <Input
               id="book-address"
               ref={addressRef}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="Enter city or area to search you book"
+              placeholder="Kirtipur"
             />
           </div>
           <div className="space-y-2">
@@ -354,8 +354,10 @@ const AddBookForm = () => {
                 <div className="flex gap-2">
                   <MapContainer
                     center={[location.lat, location.lng]}
-                    zoom={13}
+                    zoom={17}
                     style={{ height: "400px", width: "100%" }}
+                    dragging={false}
+                    scrollWheelZoom={false}
                   >
                     <TileLayer
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
