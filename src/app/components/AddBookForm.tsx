@@ -167,7 +167,6 @@ const AddBookForm = () => {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            "ngrok-skip-browser-warning": "1",
           },
           body: JSON.stringify({
             title,
@@ -203,7 +202,6 @@ const AddBookForm = () => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "1",
         },
         body: JSON.stringify({
           image_url: uploadedCoverUrl,

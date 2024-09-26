@@ -163,7 +163,6 @@ export default function AuthPage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "1",
           },
           body: JSON.stringify(loginData),
         }
@@ -197,7 +196,6 @@ export default function AuthPage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "1",
           },
           body: JSON.stringify(signupData),
         }

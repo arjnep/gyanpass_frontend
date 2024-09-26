@@ -68,7 +68,6 @@ const MyBooks: React.FC = () => {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/books/`, {
         headers: {
           Authorization: `Bearer ${token}`, // Use your token storage mechanism
-          "ngrok-skip-browser-warning": "1",
         },
       });
 

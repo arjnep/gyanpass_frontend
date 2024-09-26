@@ -108,7 +108,6 @@ export default function RequestDetailsPage() {
         {
           headers: {
             Authorization: `Bearer ${token}`, // Use your token storage mechanism
-            "ngrok-skip-browser-warning": "1",
           },
         }
       );

@@ -78,7 +78,6 @@ export default function Search() {
         {
           headers: {
             "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "1",
           }
         }
       );

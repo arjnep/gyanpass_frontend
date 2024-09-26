@@ -162,7 +162,6 @@ export default function Account() {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            "ngrok-skip-browser-warning": "1",
           },
           body: JSON.stringify(updatePayload),
         }
@@ -208,7 +207,6 @@ export default function Account() {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            "ngrok-skip-browser-warning": "1",
           },
           body: JSON.stringify(updatePayload),
         }
@@ -296,7 +294,6 @@ export default function Account() {
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              "ngrok-skip-browser-warning": "1",
             },
           }
         );

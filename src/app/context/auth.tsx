@@ -69,7 +69,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "1",
         },
       });
   

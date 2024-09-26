@@ -80,7 +80,6 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/books/`, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "1",
         },
       });
 
@@ -117,7 +116,6 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "1",
           },
           body: JSON.stringify({
             requested_book_id,

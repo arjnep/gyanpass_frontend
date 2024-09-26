@@ -117,7 +117,6 @@ export default function BookDetails({
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              "ngrok-skip-browser-warning": "1",
             },
           }
         );
@@ -237,7 +236,6 @@ export default function BookDetails({
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
-              "ngrok-skip-browser-warning": "1",
             },
             body: JSON.stringify({
               latitude: location.lat,
@@ -272,7 +270,6 @@ export default function BookDetails({
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
-              "ngrok-skip-browser-warning": "1",
             },
             body: JSON.stringify(selectedBook),
           }
@@ -302,7 +299,6 @@ export default function BookDetails({
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${token}`, // Use your token storage mechanism
-              "ngrok-skip-browser-warning": "1",
             },
           }
         );
