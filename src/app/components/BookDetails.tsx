@@ -141,7 +141,7 @@ export default function BookDetails({
             (request: any) => request.requested_by_id === user.uid
           );
           const pendingOrAccepted = data.requests.some(
-            (request: any) => request.status === ("pending" || "accepted")
+            (request: any) => request.status === "pending" || request.status === "accepted"
           );
           const pendingExchanged = data.requests.some(
             (request: any) => request.status === "exchanged"
