@@ -20,6 +20,7 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@types/leaflet-geosearch": "^2.7.1",
+    "@types/prop-types": "^15.7.13",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -38,7 +39,7 @@
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.12",
-    "@types/node": "^20",
+    "@types/node": "^20.16.9",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

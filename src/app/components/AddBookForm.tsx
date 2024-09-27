@@ -285,7 +285,7 @@ const AddBookForm = () => {
 
                 <Select
                   value={description.condition}
-                  onValueChange={(value) => {
+                  onValueChange={(value: string) => {
                     setDescription((prev) => ({
                       ...prev,
                       condition: value,
