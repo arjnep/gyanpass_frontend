@@ -22,11 +22,24 @@ import { customIcon } from "./Map";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { storage } from "../../lib/firebase"; // Import Firebase storage
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const AddBookForm = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState({
+    message: "",
+    condition: "",
+    preferredExchange: "",
+  });
   const [genre, setGenre] = useState("");
   const [address, setAddress] = useState("");
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
@@ -36,6 +49,7 @@ const AddBookForm = () => {
   const titleRef = useRef<HTMLInputElement | null>(null);
   const authorRef = useRef<HTMLInputElement | null>(null);
   const genreRef = useRef<HTMLInputElement | null>(null);
+  const descriptionRef = useRef<HTMLDivElement | null>(null);
   const addressRef = useRef<HTMLInputElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(false);
@@ -85,6 +99,11 @@ const AddBookForm = () => {
       addressRef.current?.focus();
       return;
     }
+    if (!description || description.condition == "" || description.message == "" || description.preferredExchange == "") {
+      setValidationError("All fields are necessary");
+      descriptionRef.current?.focus();
+      return;
+    }
     if (!coverUrl) {
       setValidationError("All fields are necessary");
       fileInputRef.current?.focus();
@@ -104,7 +123,7 @@ const AddBookForm = () => {
   const handleSuccessResponse = () => {
     setTitle("");
     setAuthor("");
-    setDescription("");
+    setDescription({ message: "", condition: "", preferredExchange: "" });
     setGenre("");
     setAddress("");
     setCoverUrl("");
@@ -171,7 +190,11 @@ const AddBookForm = () => {
           body: JSON.stringify({
             title,
             author,
-            description,
+            description: {
+              message: description.message,
+              condition: description.condition,
+              preferred_exchange: description.preferredExchange,
+            },
             genre,
             address,
             latitude: location?.lat,
@@ -247,14 +270,76 @@ const AddBookForm = () => {
               placeholder="Albert Camus"
             />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2" ref={descriptionRef}>
             <Label htmlFor="book-description">Book Description</Label>
-            <Textarea
+
+            {/* <Textarea
               id="book-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Condition: Good, Preferred Exchange: Philosophy Books"
-            />
+            /> */}
+            <div className="flex gap-7 flex-wrap flex-col md:flex-row md:justify-between">
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <p className="text-sm text-muted-foreground">Condition:</p>
+
+                <Select
+                  value={description.condition}
+                  onValueChange={(value) => {
+                    setDescription((prev) => ({
+                      ...prev,
+                      condition: value,
+                    }));
+                  }}
+                >
+                  <SelectTrigger className="w-auto">
+                    <SelectValue placeholder="Select Book Condition" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Condition</SelectLabel>
+                      <SelectItem value="new">New</SelectItem>
+                      <SelectItem value="good">Good</SelectItem>
+                      <SelectItem value="acceptable">Acceptable</SelectItem>
+                      <SelectItem value="damaged">Damaged</SelectItem>
+                      <SelectItem value="vintage">Vintage</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <p className="text-sm text-muted-foreground">
+                  Preferred Exchange:
+                </p>
+
+                <Input
+                  id="book-preferred-exchange"
+                  value={description.preferredExchange}
+                  onChange={(e) => {
+                    setDescription((prev) => ({
+                      ...prev,
+                      preferredExchange: e.target.value, // Update the preferredExchange field
+                    }));
+                  }}
+                  placeholder="Philosophy Books"
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2 items-center">
+                <p className="text-sm text-muted-foreground">Message:</p>
+
+                <Textarea
+                  id="book-description-message"
+                  value={description.message}
+                  onChange={(e) => {
+                    setDescription((prev) => ({
+                      ...prev,
+                      message: e.target.value, // Update the preferredExchange field
+                    }));
+                  }}
+                  placeholder="Very Urgent"
+                />
+              </div>
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="book-genre">Book Genre</Label>
@@ -344,7 +429,15 @@ const AddBookForm = () => {
               </div>
               <div className="flex flex-col">
                 <strong className="text-left">Description: </strong>
-                <p className="col-span-3">{description}</p>
+                <p className="col-span-3">{description.message}</p>
+              </div>
+              <div className="flex flex-col">
+                <strong className="text-left">Condition: </strong>
+                <p className="col-span-3">{description.condition}</p>
+              </div>
+              <div className="flex flex-col">
+                <strong className="text-left">Preferred Exchange: </strong>
+                <p className="col-span-3">{description.preferredExchange}</p>
               </div>
               <div className="flex gap-2">
                 <strong className="text-right">Pickup Area: </strong>
@@ -373,7 +466,7 @@ const AddBookForm = () => {
                 </div>
               )}
             </div>
-            <DialogFooter>
+            <DialogFooter className="gap-y-3">
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
                   Back

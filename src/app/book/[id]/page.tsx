@@ -8,6 +8,14 @@ import Loading from "../../../components/custom/Loading";
 import { Link } from "lucide-react";
 import { useAuth } from "@/app/context/auth";
 import SuccessAnimation from "@/components/custom/Success";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 import {
   Dialog,
@@ -20,10 +28,11 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import NotFound from "@/app/not-found";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
+import ArrowLeftIcon from "@/components/custom/ArrowLeft";
 
-const BookDetails= dynamic(() => import('@/app/components/BookDetails'), { 
-  ssr: false 
+const BookDetails = dynamic(() => import("@/app/components/BookDetails"), {
+  ssr: false,
 });
 
 interface Book {
@@ -31,7 +40,11 @@ interface Book {
   title: string;
   author: string;
   genre: string;
-  description: string;
+  description: {
+    message: string;
+    condition: string;
+    preferred_exchange: string;
+  };
   image_url: string;
   user_id: number;
   owner: {
@@ -62,6 +75,7 @@ export default function BookDetailsPage() {
   const [isDeleteSuccessDialogOpen, setIsDeleteSuccessDialogOpen] =
     useState(false);
   const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
+  const [bookNotFound, setBookNotFound] = useState(false);
 
   const handleErrorResponse = (errorData: any) => {
     const err = errorData.error;
@@ -72,7 +86,7 @@ export default function BookDetailsPage() {
     } else if (err.type == "AUTHORIZATION") {
       setIsSessionDialogOpen(true);
     } else if (err.type == "NOT_FOUND") {
-      setError("Not Found!");
+      setBookNotFound(true);
     } else if (err.type == "INTERNAL") {
       setError("Internal Server Error!");
     } else {
@@ -83,11 +97,14 @@ export default function BookDetailsPage() {
   const fetchBookDetails = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/books/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Use your token storage mechanism
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/books/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Use your token storage mechanism
+          },
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         console.log(errorData);
@@ -121,7 +138,7 @@ export default function BookDetailsPage() {
 
   const handleUpdate = async () => {
     await fetchBookDetails();
-  }
+  };
 
   const handleDelete = async () => {
     setIsDeleteSuccessDialogOpen(true);
@@ -132,29 +149,49 @@ export default function BookDetailsPage() {
     router.back();
   };
 
-  if (loading) {
-    return (
-      <Loading
-        message="Loading book details..."
-        className="mt-10"
-      />
-    );
-  }
-
-
-  if (error) {
-    return (
-      <div className="text-red-500 my-10 text-lg text-center">{error}</div>
-    );
-  }
-
-  if (!book) {
-    return <NotFound />;
-  }
-
   return (
     <div className="flex flex-col min-h-[100dvh]">
-      <BookDetails book={book} onEdit={handleEdit} onUpdate={handleUpdate} onDelete={handleDelete} />
+      <div className="p-6 space-y-6">
+        <div className="flex items-center space-x-4">
+          <Button variant="ghost" size="icon">
+            <ArrowLeftIcon href="/dashboard" />
+          </Button>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink>Books</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>
+                  {bookNotFound ? "..." : book?.title}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        {loading ? (
+          <Loading message="Loading book details..." className="mt-10" />
+        ) : error ? (
+          <div className="text-red-500 my-10 text-lg text-center">{error}</div>
+        ) : bookNotFound ? (
+          <NotFound
+            title="Book Not Found"
+            description="The book you are looking for does not exist."
+          />
+        ) : (
+          <BookDetails
+            book={book}
+            onEdit={handleEdit}
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
+          />
+        )}
+      </div>
       <Dialog
         open={isEditSuccessDialogOpen}
         onOpenChange={setIsEditSuccessDialogOpen}
@@ -192,7 +229,7 @@ export default function BookDetailsPage() {
         </DialogContent>
       </Dialog>
 
-       <Dialog open={isSessionDialogOpen} onOpenChange={setIsSessionDialogOpen}>
+      <Dialog open={isSessionDialogOpen} onOpenChange={setIsSessionDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Session Expired</DialogTitle>
@@ -214,7 +251,6 @@ export default function BookDetailsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 }

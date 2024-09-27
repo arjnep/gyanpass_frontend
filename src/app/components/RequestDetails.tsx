@@ -50,7 +50,11 @@ interface Book {
   title: string;
   author: string;
   genre: string;
-  description: string;
+  description: {
+    message: string;
+    condition: string;
+    preferred_exchange: string;
+  };
   image_url: string;
   user_id: string;
   owner: {
@@ -80,7 +84,7 @@ interface RequestDetailsProps {
     status: string;
     requested_by_confirmed: boolean;
     requested_to_confirmed: boolean;
-  };
+  } | null;
   onAccept: () => void;
   onDecline: () => void;
   onCancel: () => void;
@@ -160,7 +164,7 @@ export default function RequestDetails({
   const handleConfirm = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request.id}/confirm`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request?.id}/confirm`,
         {
           method: "POST",
           headers: {
@@ -196,7 +200,7 @@ export default function RequestDetails({
   const handleAccept = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request.id}/accept`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request?.id}/accept`,
         {
           method: "POST",
           headers: {
@@ -226,7 +230,7 @@ export default function RequestDetails({
   const handleCancel = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request.id}/delete`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request?.id}/delete`,
         {
           method: "DELETE",
           headers: {
@@ -253,7 +257,7 @@ export default function RequestDetails({
   const handleDecline = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request.id}/decline`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/${request?.id}/decline`,
         {
           method: "POST",
           headers: {
@@ -300,9 +304,23 @@ export default function RequestDetails({
             <strong>Genre: </strong>
             <span className="text-muted-foreground">{book.genre}</span>
           </p>
+          <p>
+            <strong>Condition: </strong>
+            <span className="text-muted-foreground">
+              {book?.description.condition
+                .toLowerCase()
+                .replace(/(?:^|\s)\S/g, (match) => match.toUpperCase())}
+            </span>
+          </p>
+          <p>
+            <strong>Preferred Exchange: </strong>
+            <span className="text-muted-foreground">
+              {book?.description.preferred_exchange}
+            </span>
+          </p>
           <div className="flex flex-col">
             <strong className="block">Description:</strong>
-            <p className="text-muted-foreground">{book.description}</p>
+            <p className="text-muted-foreground">{book?.description.message}</p>
           </div>
           {/* <div className="text-muted-foreground">{book.author}</div> */}
         </div>
@@ -416,343 +434,292 @@ export default function RequestDetails({
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center space-x-4">
-        <Button variant="ghost" size="icon">
-          <ArrowLeftIcon href="/dashboard" />
-        </Button>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink>Books</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
+    <div className="grid grid-cols-1 gap-8">
+      <div className="grid gap-4">
+        {error && (
+          <div className="text-red-500 text-lg text-center">{error}</div>
+        )}
+        <Card>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {isRequester ? (
               <>
-                <BreadcrumbItem>Request To</BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  {selectedRequest.RequestedBook.title}
-                </BreadcrumbItem>
+                {renderBookDetails(
+                  selectedRequest.RequestedBook,
+                  "Requested Book"
+                )}
+                {renderBookDetails(selectedRequest.OfferedBook, "Offered Book")}
               </>
             ) : (
               <>
-                <BreadcrumbItem>Request For</BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  {selectedRequest.RequestedBook.title}
-                </BreadcrumbItem>
+                {renderBookDetails(selectedRequest.OfferedBook, "Offered Book")}
+                {renderBookDetails(
+                  selectedRequest.RequestedBook,
+                  "Requested Book"
+                )}
               </>
             )}
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-      <div className="grid grid-cols-1 gap-8">
-        <div className="grid gap-4">
-          {error && (
-            <div className="text-red-500 text-lg text-center">{error}</div>
-          )}
-          <Card>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {isRequester ? (
-                <>
-                  {renderBookDetails(
-                    selectedRequest.RequestedBook,
-                    "Requested Book"
-                  )}
-                  {renderBookDetails(
-                    selectedRequest.OfferedBook,
-                    "Offered Book"
-                  )}
-                </>
-              ) : (
-                <>
-                  {renderBookDetails(
-                    selectedRequest.OfferedBook,
-                    "Offered Book"
-                  )}
-                  {renderBookDetails(
-                    selectedRequest.RequestedBook,
-                    "Requested Book"
-                  )}
-                </>
-              )}
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="flex flex-wrap gap-20 justify-between gap-y-10">
-              {renderOwnerDetails(
-                isRequester
-                  ? selectedRequest.RequestedBook.owner
-                  : selectedRequest.OfferedBook.owner,
-                onUpdate
-              )}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex flex-wrap gap-20 justify-between gap-y-10">
+            {renderOwnerDetails(
+              isRequester
+                ? selectedRequest.RequestedBook.owner
+                : selectedRequest.OfferedBook.owner,
+              onUpdate
+            )}
 
-              <div className="grid gap-2 items-center">
-                <div className="font-medium">Status</div>
-                <div
-                  className={`px-2 py-1 rounded-md w-fit ${
-                    selectedRequest.status === "pending"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : selectedRequest.status === "accepted"
-                      ? "bg-green-100 text-green-800"
-                      : selectedRequest.requested_by_confirmed &&
-                        selectedRequest.requested_to_confirmed
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {selectedRequest.requested_by_confirmed &&
-                  selectedRequest.requested_to_confirmed ? (
-                    <div>exchanged</div>
-                  ) : selectedRequest.requested_by_confirmed ? (
+            <div className="grid gap-2 items-center">
+              <div className="font-medium">Status</div>
+              <div
+                className={`px-2 py-1 rounded-md w-fit ${
+                  selectedRequest.status === "pending"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : selectedRequest.status === "accepted"
+                    ? "bg-green-100 text-green-800"
+                    : selectedRequest.requested_by_confirmed &&
+                      selectedRequest.requested_to_confirmed
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {selectedRequest.requested_by_confirmed &&
+                selectedRequest.requested_to_confirmed ? (
+                  <div>exchanged</div>
+                ) : selectedRequest.requested_by_confirmed ? (
+                  <div>
                     <div>
-                      <div>
-                        {selectedRequest.OfferedBook.owner.first_name} -
-                        confirmed
-                      </div>
-                      <div>
-                        {selectedRequest.RequestedBook.owner.first_name} - not
-                        confirmed
-                      </div>
+                      {selectedRequest.OfferedBook.owner.first_name} - confirmed
                     </div>
-                  ) : selectedRequest.requested_to_confirmed ? (
                     <div>
-                      <div>
-                        {selectedRequest.RequestedBook.owner.first_name} -
-                        confirmed
-                      </div>
-                      <div>
-                        {selectedRequest.OfferedBook.owner.first_name} - not
-                        confirmed
-                      </div>
+                      {selectedRequest.RequestedBook.owner.first_name} - not
+                      confirmed
                     </div>
-                  ) : (
-                    selectedRequest.status
-                  )}
-                </div>
-              </div>
-              {
-                // Case 1: Request is pending and neither party has confirmed
-                !selectedRequest.requested_by_confirmed &&
-                !selectedRequest.requested_to_confirmed &&
-                selectedRequest.status !== "accepted" ? (
-                  <>
-                    {isRequester && selectedRequest.status === "declined" ? (
-                      // Buttons for the requester
-                      <div className="flex flex-col gap-6 max-w-fit m-auto sm:m-0 justify-center">
-                        <Button
-                          onClick={() => handleCancelClick(request)}
-                          size="lg"
-                        >
-                          Cancel Request
-                        </Button>
-                      </div>
-                    ) : !isRequester &&
-                      selectedRequest.status !== "declined" ? (
-                      // Buttons for the non-requester
-                      <div className="flex flex-col gap-6 max-w-fit m-auto sm:m-0">
-                        <Button
-                          onClick={() => handleAcceptClick(request)}
-                          size="lg"
-                        >
-                          Accept Request
-                        </Button>
-                        <Button
-                          onClick={() => handleDeclineClick(request)}
-                          size="lg"
-                        >
-                          Decline Request
-                        </Button>
-                      </div>
-                    ) : null}
-                  </>
-                ) : selectedRequest.status === "accepted" ? (
-                  // Case 2: Request is accepted
-                  !selectedRequest.requested_by_confirmed ||
-                  !selectedRequest.requested_to_confirmed ? (
-                    // Show confirm button if either party has not confirmed
-                    !hasConfirmed ? (
-                      <div className="flex flex-col justify-center gap-6 max-w-fit m-auto sm:m-0">
-                        <Button
-                          onClick={() => handleConfirmClick(request)}
-                          size="lg"
-                        >
-                          Confirm
-                        </Button>
-                      </div>
-                    ) : null
-                  ) : null
-                ) : // Case 3: Request is accepted and one party has confirmed
-                !hasConfirmed &&
-                  ((selectedRequest.requested_by_confirmed &&
-                    !selectedRequest.requested_to_confirmed &&
-                    !isRequester) ||
-                    (selectedRequest.requested_to_confirmed &&
-                      !selectedRequest.requested_by_confirmed &&
-                      isRequester)) ? (
-                  // Show confirm button to the unconfirmed party
-                  <div className="flex flex-col justify-center gap-6 max-w-fit m-auto sm:m-0">
-                    <Button
-                      onClick={() => handleConfirmClick(request)}
-                      size="lg"
-                    >
-                      Confirm
-                    </Button>
                   </div>
+                ) : selectedRequest.requested_to_confirmed ? (
+                  <div>
+                    <div>
+                      {selectedRequest.RequestedBook.owner.first_name} -
+                      confirmed
+                    </div>
+                    <div>
+                      {selectedRequest.OfferedBook.owner.first_name} - not
+                      confirmed
+                    </div>
+                  </div>
+                ) : (
+                  selectedRequest.status
+                )}
+              </div>
+            </div>
+            {
+              // Case 1: Request is pending and neither party has confirmed
+              !selectedRequest.requested_by_confirmed &&
+              !selectedRequest.requested_to_confirmed &&
+              selectedRequest.status !== "accepted" ? (
+                <>
+                  {isRequester && selectedRequest.status === "declined" ? (
+                    // Buttons for the requester
+                    <div className="flex flex-col gap-6 max-w-fit m-auto sm:m-0 justify-center">
+                      <Button
+                        onClick={() => handleCancelClick(request)}
+                        size="lg"
+                      >
+                        Cancel Request
+                      </Button>
+                    </div>
+                  ) : !isRequester && selectedRequest.status !== "declined" ? (
+                    // Buttons for the non-requester
+                    <div className="flex flex-col gap-6 max-w-fit m-auto sm:m-0">
+                      <Button
+                        onClick={() => handleAcceptClick(request)}
+                        size="lg"
+                      >
+                        Accept Request
+                      </Button>
+                      <Button
+                        onClick={() => handleDeclineClick(request)}
+                        size="lg"
+                      >
+                        Decline Request
+                      </Button>
+                    </div>
+                  ) : null}
+                </>
+              ) : selectedRequest.status === "accepted" ? (
+                // Case 2: Request is accepted
+                !selectedRequest.requested_by_confirmed ||
+                !selectedRequest.requested_to_confirmed ? (
+                  // Show confirm button if either party has not confirmed
+                  !hasConfirmed ? (
+                    <div className="flex flex-col justify-center gap-6 max-w-fit m-auto sm:m-0">
+                      <Button
+                        onClick={() => handleConfirmClick(request)}
+                        size="lg"
+                      >
+                        Confirm
+                      </Button>
+                    </div>
+                  ) : null
                 ) : null
-              }
+              ) : // Case 3: Request is accepted and one party has confirmed
+              !hasConfirmed &&
+                ((selectedRequest.requested_by_confirmed &&
+                  !selectedRequest.requested_to_confirmed &&
+                  !isRequester) ||
+                  (selectedRequest.requested_to_confirmed &&
+                    !selectedRequest.requested_by_confirmed &&
+                    isRequester)) ? (
+                // Show confirm button to the unconfirmed party
+                <div className="flex flex-col justify-center gap-6 max-w-fit m-auto sm:m-0">
+                  <Button onClick={() => handleConfirmClick(request)} size="lg">
+                    Confirm
+                  </Button>
+                </div>
+              ) : null
+            }
+          </CardContent>
+        </Card>
+        {(selectedRequest?.status === "accepted" ||
+          selectedRequest?.status === "exchanged") && (
+          <Card>
+            <CardContent className="grid gap-4">
+              <div className="font-medium">Pickup Location</div>
+              <MapContainer
+                className="-z-0"
+                center={[
+                  selectedRequest.RequestedBook.location?.latitude ?? 0,
+                  selectedRequest.RequestedBook.location?.longitude ?? 0,
+                ]}
+                zoom={13}
+                style={{ height: "400px", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <Marker
+                  position={[
+                    selectedRequest.RequestedBook.location?.latitude ?? 0,
+                    selectedRequest.RequestedBook.location?.longitude ?? 0,
+                  ]}
+                  icon={customIcon}
+                >
+                  <Popup>This is the location!</Popup>
+                </Marker>
+              </MapContainer>
             </CardContent>
           </Card>
-          {(selectedRequest?.status === "accepted" ||
-            selectedRequest?.status === "exchanged") && (
-            <Card>
-              <CardContent className="grid gap-4">
-                <div className="font-medium">Pickup Location</div>
-                <MapContainer
-                    className="-z-0"
-                    center={[
-                      selectedRequest.RequestedBook.location?.latitude ?? 0,
-                      selectedRequest.RequestedBook.location?.longitude ?? 0,
-                    ]}
-                    zoom={13}
-                    style={{ height: "400px", width: "100%" }}
-                  >
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    <Marker
-                      position={[
-                        selectedRequest.RequestedBook.location?.latitude ?? 0,
-                        selectedRequest.RequestedBook.location?.longitude ?? 0,
-                      ]}
-                      icon={customIcon}
-                    >
-                      <Popup>This is the location!</Popup>
-                    </Marker>
-                  </MapContainer>
-              </CardContent>
-            </Card>
-          )}
+        )}
 
-          <AlertDialog
-            open={isCancelRequestDialogOpen}
-            onOpenChange={setIsCancelRequestDialogOpen}
-          >
-            <AlertDialogTrigger></AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader className="sm:text-center mb-4">
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              </AlertDialogHeader>
-              <AlertDialogDescription>
-                Are you sure you want to cancel this exchange request process?
-              </AlertDialogDescription>
-              <AlertDialogFooter className="sm:space-x-6 sm:justify-center">
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleCancel}>
-                  Yes
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+        <AlertDialog
+          open={isCancelRequestDialogOpen}
+          onOpenChange={setIsCancelRequestDialogOpen}
+        >
+          <AlertDialogTrigger></AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader className="sm:text-center mb-4">
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogDescription>
+              Are you sure you want to cancel this exchange request process?
+            </AlertDialogDescription>
+            <AlertDialogFooter className="sm:space-x-6 sm:justify-center">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleCancel}>Yes</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-          <AlertDialog
-            open={isAcceptRequestDialogOpen}
-            onOpenChange={setIsAcceptRequestDialogOpen}
-          >
-            <AlertDialogTrigger></AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader className="sm:text-center mb-4">
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              </AlertDialogHeader>
-              <AlertDialogDescription>
-                Are you sure you want to accept this exchange request? <br />
-                <br />
-                All the remaining requests for your book <strong>{request.RequestedBook.title}</strong> will be
-                declined.
-              </AlertDialogDescription>
-              <AlertDialogFooter className="sm:space-x-6 sm:justify-center">
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleAccept}>
-                  Accept
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+        <AlertDialog
+          open={isAcceptRequestDialogOpen}
+          onOpenChange={setIsAcceptRequestDialogOpen}
+        >
+          <AlertDialogTrigger></AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader className="sm:text-center mb-4">
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogDescription>
+              Are you sure you want to accept this exchange request? <br />
+              <br />
+              All the remaining requests for your book{" "}
+              <strong>{request?.RequestedBook.title}</strong> will be declined.
+            </AlertDialogDescription>
+            <AlertDialogFooter className="sm:space-x-6 sm:justify-center">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleAccept}>
+                Accept
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-          <AlertDialog
-            open={isDeclineRequestDialogOpen}
-            onOpenChange={setIsDeclineRequestDialogOpen}
-          >
-            <AlertDialogTrigger></AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader className="sm:text-center mb-4">
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              </AlertDialogHeader>
-              <AlertDialogDescription>
-                Are you sure you want to decline this exchange request?
-              </AlertDialogDescription>
-              <AlertDialogFooter className="sm:space-x-6 sm:justify-center">
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDecline}>
-                  Decline
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+        <AlertDialog
+          open={isDeclineRequestDialogOpen}
+          onOpenChange={setIsDeclineRequestDialogOpen}
+        >
+          <AlertDialogTrigger></AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader className="sm:text-center mb-4">
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogDescription>
+              Are you sure you want to decline this exchange request?
+            </AlertDialogDescription>
+            <AlertDialogFooter className="sm:space-x-6 sm:justify-center">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDecline}>
+                Decline
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-          <AlertDialog
-            open={isConfirmRequestDialogOpen}
-            onOpenChange={setIsConfirmRequestDialogOpen}
-          >
-            <AlertDialogTrigger></AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader className="sm:text-center mb-4">
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              </AlertDialogHeader>
-              <AlertDialogDescription>
-                You are confirming that you got the exchanged book?
-              </AlertDialogDescription>
-              <AlertDialogFooter className="sm:space-x-6 sm:justify-center">
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleConfirm}>
-                  Yes
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+        <AlertDialog
+          open={isConfirmRequestDialogOpen}
+          onOpenChange={setIsConfirmRequestDialogOpen}
+        >
+          <AlertDialogTrigger></AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader className="sm:text-center mb-4">
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogDescription>
+              You are confirming that you got the exchanged book?
+            </AlertDialogDescription>
+            <AlertDialogFooter className="sm:space-x-6 sm:justify-center">
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirm}>Yes</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-          <Dialog
-            open={isSessionDialogOpen}
-            onOpenChange={setIsSessionDialogOpen}
-          >
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Session Expired</DialogTitle>
-                <DialogDescription>
-                  Your session has expired. Please log in again.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button
-                    onClick={() => {
-                      setIsSessionDialogOpen(false);
-                      logout();
-                    }}
-                  >
-                    Login
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
+        <Dialog
+          open={isSessionDialogOpen}
+          onOpenChange={setIsSessionDialogOpen}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Session Expired</DialogTitle>
+              <DialogDescription>
+                Your session has expired. Please log in again.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  onClick={() => {
+                    setIsSessionDialogOpen(false);
+                    logout();
+                  }}
+                >
+                  Login
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

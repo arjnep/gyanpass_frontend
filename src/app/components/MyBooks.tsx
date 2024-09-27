@@ -22,7 +22,11 @@ interface Book {
   title: string;
   author: string;
   genre: string;
-  description: string;
+  description: {
+    message: string;
+    condition: string;
+    preferred_exchange: string;
+  };
   image_url: string;
   user_id: string;
   owner: {

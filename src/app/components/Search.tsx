@@ -14,14 +14,26 @@ import PaginationComponent from "../../components/custom/Pagination";
 import Loading from "../../components/custom/Loading";
 import Link from "next/link";
 import { useAuth } from "../context/auth";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Book {
   id: number;
   title: string;
   author: string;
   genre: string;
-  description: string;
+  description: {
+    message: string;
+    condition: string;
+    preferred_exchange: string;
+  };
   image_url: string;
   owner: {
     user_id: number;
@@ -43,15 +55,14 @@ export default function Search() {
   const [totalPages, setTotalPages] = useState<number>(0);
 
   useEffect(() => {
-
     const checkToken = async () => {
       try {
         const isValid = await validateToken();
         if (!isValid) {
-          setIsSessionDialogOpen(true)
+          setIsSessionDialogOpen(true);
         }
       } catch (error) {
-        console.error('Error validating token:', error);
+        console.error("Error validating token:", error);
       }
     };
 
@@ -78,7 +89,7 @@ export default function Search() {
         {
           headers: {
             "Content-Type": "application/json",
-          }
+          },
         }
       );
 
@@ -114,87 +125,92 @@ export default function Search() {
 
   return (
     <>
-    <Card className="w-full max-w-7xl mx-auto">
-      <CardContent className="p-4">
-        <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-          <Select defaultValue="title" onValueChange={handleFilterChange}>
-            <SelectTrigger className="w-full sm:w-[140px]">
-              <SelectValue placeholder="Filter" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="title">Title</SelectItem>
-              <SelectItem value="address">Address</SelectItem>
-            </SelectContent>
-          </Select>
-          <div className="relative flex-grow">
-            <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder={`Search by ${filter}`}
-              className="pl-8 w-full"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+      <Card className="w-full max-w-7xl mx-auto">
+        <CardContent className="p-4">
+          <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+            <Select defaultValue="title" onValueChange={handleFilterChange}>
+              <SelectTrigger className="w-full sm:w-[140px]">
+                <SelectValue placeholder="Filter" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="title">Title</SelectItem>
+                <SelectItem value="address">Address</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="relative flex-grow">
+              <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder={`Search by ${filter}`}
+                className="pl-8 w-full"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
 
-        {loading && (
-            <Loading message="Loading..." />
-        )}
-        {error && <div className="text-red-500 my-10 text-lg text-center">{error}</div>}
+          {loading && <Loading message="Loading..." />}
+          {error && (
+            <div className="text-red-500 my-10 text-lg text-center">
+              {error}
+            </div>
+          )}
 
-        {books && books.length > 0 ? (
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-            {books.map((book: Book) => (
-              <BookCard
-                key={book.id}
-                title={book.title}
-                author={book.author}
-                genre={book.genre}
-                coverUrl={book.image_url}
-              >
-                <Link href={`/book/${book.id}`}>
-                <Button variant="outline" size="sm">
-                  View
-                </Button>
-                </Link>
-              </BookCard>
-            ))}
-          </div>
-        ) : (
-          !loading && <div className="my-10 text-center text-2xl">No books found!</div>
-        )}
-
-        {totalPages > 1 && (
-        <PaginationComponent page={page} totalPages={totalPages} onPageChange={handlePageChange} />
-        )}
-      </CardContent>
-    </Card>
-    <Dialog
-          open={isSessionDialogOpen}
-          onOpenChange={setIsSessionDialogOpen}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Session Expired</DialogTitle>
-              <DialogDescription>
-                Your session has expired. Please log in again.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button
-                  onClick={() => {
-                    setIsSessionDialogOpen(false);
-                    logout();
-                  }}
+          {books && books.length > 0 ? (
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+              {books.map((book: Book) => (
+                <BookCard
+                  key={book.id}
+                  title={book.title}
+                  author={book.author}
+                  genre={book.genre}
+                  coverUrl={book.image_url}
                 >
-                  Login
-                </Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+                  <Link href={`/book/${book.id}`}>
+                    <Button variant="outline" size="sm">
+                      View
+                    </Button>
+                  </Link>
+                </BookCard>
+              ))}
+            </div>
+          ) : (
+            !loading && (
+              <div className="my-10 text-center text-2xl">No books found!</div>
+            )
+          )}
+
+          {totalPages > 1 && (
+            <PaginationComponent
+              page={page}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </CardContent>
+      </Card>
+      <Dialog open={isSessionDialogOpen} onOpenChange={setIsSessionDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Session Expired</DialogTitle>
+            <DialogDescription>
+              Your session has expired. Please log in again.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button
+                onClick={() => {
+                  setIsSessionDialogOpen(false);
+                  logout();
+                }}
+              >
+                Login
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

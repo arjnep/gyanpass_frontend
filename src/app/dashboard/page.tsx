@@ -30,7 +30,7 @@ export default function Dashboard() {
   const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
   
     if (!isAuthenticated) {
-      return <NotFound />
+      return <NotFound title="Page Not Found" description="The page you are looking for does not exist." />
     }
 
   return (

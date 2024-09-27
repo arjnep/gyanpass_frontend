@@ -8,24 +8,37 @@ import Loading from "@/components/custom/Loading";
 import NotFound from "@/app/not-found";
 import { useAuth } from "@/app/context/auth";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogClose,
-  } from "@/components/ui/dialog";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import SuccessAnimation from "@/components/custom/Success";
+import ArrowLeftIcon from "@/components/custom/ArrowLeft";
 
 interface Book {
   id: number;
   title: string;
   author: string;
   genre: string;
-  description: string;
+  description: {
+    message: string;
+    condition: string;
+    preferred_exchange: string;
+  };
   image_url: string;
   user_id: string;
   owner: {
@@ -59,7 +72,7 @@ interface ExchangeRequest {
 export default function RequestDetailsPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>(); // Get the book ID from the URL
-  const { token, logout } = useAuth();
+  const { token, logout, user } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
@@ -81,6 +94,7 @@ export default function RequestDetailsPage() {
     isCancelRequestSuccessDialogOpen,
     setIsCancelRequestSuccessDialogOpen,
   ] = useState(false);
+  const [requestNotFound, setRequestNotFound] = useState(false);
 
   const handleErrorResponse = (errorData: any) => {
     const err = errorData.error;
@@ -89,9 +103,9 @@ export default function RequestDetailsPage() {
     if (err.type == "BAD_REQUEST") {
       setError("Bad Request!");
     } else if (err.type == "AUTHORIZATION") {
-        setIsSessionDialogOpen(true);
+      setIsSessionDialogOpen(true);
     } else if (err.type == "NOT_FOUND") {
-      return <NotFound />;
+      setRequestNotFound(true);
     } else if (err.type == "INTERNAL") {
       setError("Internal Server Error!");
     } else {
@@ -128,6 +142,8 @@ export default function RequestDetailsPage() {
     }
   };
 
+  const isRequester = user?.uid === exchangeRequest?.requested_by_id;
+
   useEffect(() => {
     if (!id || !token) return;
 
@@ -151,47 +167,83 @@ export default function RequestDetailsPage() {
     await fetchExchangeRequest();
     setIsConfirmRequestSuccessDialogOpen(true);
   };
- 
+
   const handleCancel = async () => {
     setIsCancelRequestSuccessDialogOpen(true);
   };
 
   const handleUpdate = async () => {
     await fetchExchangeRequest();
-  }
+  };
 
   const handleCancelRequestSuccessDialogClose = () => {
     setIsCancelRequestSuccessDialogOpen(false);
     router.back();
   };
- 
-  
-  if (loading) {
-    return <Loading message="Loading Request details..." className="mt-10" />;
-  }
-
-  if (error) {
-    return (
-      <div className="text-red-500 my-10 text-lg text-center">{error}</div>
-    );
-  }
-
-  if (!exchangeRequest) {
-    return <NotFound />;
-  }
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
-      <RequestDetails
-        request={exchangeRequest}
-        onAccept={handleAccept}
-        onDecline={handleDecline}
-        onCancel={handleCancel}
-        onConfirm={handleConfirm}
-        onUpdate={handleUpdate}
-      />
+      <div className="p-6 space-y-6">
+        <div className="flex items-center space-x-4">
+          <Button variant="ghost" size="icon">
+            <ArrowLeftIcon href="/dashboard" />
+          </Button>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink>Request</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              {isRequester ? (
+                <>
+                  <BreadcrumbItem>
+                    Request {loading ? "..." : requestNotFound ? "..." : "To"}
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    {exchangeRequest?.RequestedBook.title}
+                  </BreadcrumbItem>
+                </>
+              ) : (
+                <>
+                  <BreadcrumbItem>
+                    Request {loading ? "..." : requestNotFound ? "..." : "For"}
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    {exchangeRequest?.RequestedBook.title}
+                  </BreadcrumbItem>
+                </>
+              )}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        {loading ? (
+          <Loading message="Loading Request details..." className="mt-10" />
+        ) : error ? (
+          <div className="text-red-500 my-10 text-lg text-center">{error}</div>
+        ) : requestNotFound ? (
+          <NotFound
+            title="Exchange Request Not Found"
+            description="The page you are looking for does not exist."
+          />
+        ) : (
+          <RequestDetails
+            request={exchangeRequest}
+            onAccept={handleAccept}
+            onDecline={handleDecline}
+            onCancel={handleCancel}
+            onConfirm={handleConfirm}
+            onUpdate={handleUpdate}
+          />
+        )}
+      </div>
 
-<Dialog open={isSessionDialogOpen} onOpenChange={setIsSessionDialogOpen}>
+      <Dialog open={isSessionDialogOpen} onOpenChange={setIsSessionDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Session Expired</DialogTitle>
@@ -259,7 +311,8 @@ export default function RequestDetailsPage() {
             <DialogDescription>
               <SuccessAnimation />
               <p className="text-xl text-center text-gray-950">
-                Your Confirmation of this request is success! <br /> See the Updated Status.
+                Your Confirmation of this request is success! <br /> See the
+                Updated Status.
               </p>
             </DialogDescription>
           </DialogHeader>

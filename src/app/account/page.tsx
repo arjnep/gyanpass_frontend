@@ -220,8 +220,8 @@ export default function Account() {
 
       const data = await response.json();
       showToast("Password changed successfully!");
-      setCurrentPassword("")
-      setNewPassword("")
+      setCurrentPassword("");
+      setNewPassword("");
     } catch (error: any) {
       console.error("Error updating user data:", error);
       setPasswordError(error.message);
@@ -232,8 +232,8 @@ export default function Account() {
     e.preventDefault();
     if (!isPasswordValid) return;
     if (currentPassword === newPassword) {
-      setPasswordError("New Password cannot be same!")
-      return
+      setPasswordError("New Password cannot be same!");
+      return;
     }
     handlePasswordReset(currentPassword, newPassword);
   };
@@ -315,10 +315,6 @@ export default function Account() {
     fetchUserData();
   }, [user, token]);
 
-  if (loading) {
-    return <Loading message="Loading User..." />;
-  }
-
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <div className="p-6 space-y-6">
@@ -338,7 +334,9 @@ export default function Account() {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        {error ? (
+        {loading ? (
+          <Loading message="Loading User..." />
+        ) : error ? (
           <div className="text-red-500 my-10 text-lg text-center">{error}</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">

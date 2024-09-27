@@ -48,6 +48,15 @@ import {
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MapWithSearchBar, { customIcon } from "./Map";
 import { CircleUserRound, Mail, MapPinHouse, Phone } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface BookDetailsProps {
   book: {
@@ -55,7 +64,11 @@ interface BookDetailsProps {
     title: string;
     author: string;
     genre: string;
-    description: string;
+    description: {
+      message: string;
+      condition: string;
+      preferred_exchange: string;
+    };
     image_url: string;
     user_id: number;
     owner: {
@@ -72,7 +85,7 @@ interface BookDetailsProps {
       longitude: number;
     };
     is_active: boolean;
-  };
+  } | null;
   onEdit: () => void;
   onUpdate: () => void;
   onDelete: () => void;
@@ -114,7 +127,7 @@ export default function BookDetails({
     const checkRequestStatus = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/?bookID=${book.id}`,
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/exchange/requests/?bookID=${book?.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -148,13 +161,13 @@ export default function BookDetails({
       checkRequestStatus();
       console.log(isRequester);
     }
-  }, [user, book.id, token, isRequester]);
+  }, [user, book?.id, token, isRequester]);
 
   useEffect(() => {
-    if (user && book.owner.user_id === user.userID) {
+    if (user && book?.owner.user_id === user.userID) {
       setIsOwner(true);
     }
-  }, [user, book.owner.user_id]);
+  }, [user, book?.owner.user_id]);
 
   const handleEditErrorResponse = (errorData: any) => {
     const err = errorData.error;
@@ -320,51 +333,45 @@ export default function BookDetails({
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center space-x-4">
-        <Button variant="ghost" size="icon">
-          <ArrowLeftIcon href="/dashboard" />
-        </Button>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink>Books</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{book.title}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+    <>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Card className="p-6">
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Book Details</h2>
             <div className="w-full h-64 rounded-lg">
               <img
-                src={book.image_url}
+                src={book?.image_url}
                 alt="Book Cover"
                 className="w-auto h-full m-auto object-cover rounded-lg"
               />
             </div>
             <div className="flex flex-col gap-3">
-              <h3 className="text-2xl font-bold">{book.title}</h3>
+              <h3 className="text-2xl font-bold">{book?.title}</h3>
               <p>
                 <strong>Author: </strong>
-                <span className="text-muted-foreground">{book.author}</span>
+                <span className="text-muted-foreground">{book?.author}</span>
               </p>
               <p>
                 <strong>Genre: </strong>
-                <span className="text-muted-foreground">{book.genre}</span>
+                <span className="text-muted-foreground">{book?.genre}</span>
+              </p>
+              <p>
+                <strong>Condition: </strong>
+                <span className="text-muted-foreground">
+                  {book?.description.condition.toLowerCase().replace(/(?:^|\s)\S/g, match => match.toUpperCase())}
+                </span>
+              </p>
+              <p>
+                <strong>Preferred Exchange: </strong>
+                <span className="text-muted-foreground">
+                  {book?.description.preferred_exchange}
+                </span>
               </p>
               <div className="flex flex-col">
                 <strong className="block">Description:</strong>
-                <p className="text-muted-foreground">{book.description}</p>
+                <p className="text-muted-foreground">
+                  {book?.description.message}
+                </p>
               </div>
             </div>
           </div>
@@ -395,7 +402,7 @@ export default function BookDetails({
               <CircleUserRound />
               <div>
                 <p className="text-lg font-semibold">
-                  {book.owner.first_name} {book.owner.last_name}
+                  {book?.owner.first_name} {book?.owner.last_name}
                 </p>
               </div>
             </div>
@@ -404,20 +411,20 @@ export default function BookDetails({
                 <div className="flex items-center space-x-4">
                   <Mail />
                   <div>
-                    <p className="text-lg font-semibold">{book.owner.email}</p>
+                    <p className="text-lg font-semibold">{book?.owner.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
                   <Phone />
                   <div>
-                    <p className="text-lg font-semibold">{book.owner.phone}</p>
+                    <p className="text-lg font-semibold">{book?.owner.phone}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
                   <MapPinHouse />
                   <div>
                     <p className="text-lg font-semibold">
-                      {book.location.address}
+                      {book?.location.address}
                     </p>
                   </div>
                 </div>
@@ -432,12 +439,12 @@ export default function BookDetails({
           <div className="flex items-center space-x-2">
             <div className="w-4 h-4 bg-green-500 rounded-full" />
             <p className="text-muted-foreground">
-              {book.is_active ? "Active" : "Not Active"}
+              {book?.is_active ? "Active" : "Not Active"}
             </p>
           </div>
         </div>
         {!isOwner &&
-          (book.is_active && !isRequester ? (
+          (book?.is_active && !isRequester ? (
             <div className="flex gap-2 w-full justify-center sm:w-auto items-center">
               <Button
                 size="lg"
@@ -511,10 +518,10 @@ export default function BookDetails({
             {changeLocation ? (
               <MapWithSearchBar onLocationSelect={handleLocationSelect} />
             ) : (
-              book.location && (
+              book?.location && (
                 <MapContainer
                   className="-z-0"
-                  center={[book.location.latitude, book.location.longitude]}
+                  center={[book?.location.latitude, book?.location.longitude]}
                   zoom={17}
                   style={{ height: "400px", width: "100%" }}
                 >
@@ -523,7 +530,10 @@ export default function BookDetails({
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   />
                   <Marker
-                    position={[book.location.latitude, book.location.longitude]}
+                    position={[
+                      book?.location.latitude,
+                      book?.location.longitude,
+                    ]}
                     icon={customIcon}
                   >
                     <Popup>This is the location!</Popup>
@@ -606,15 +616,76 @@ export default function BookDetails({
                 placeholder="Genre"
                 className="w-full p-2 border border-gray-300 rounded"
               />
-              <textarea
-                value={selectedBook.description}
+
+              {selectedBook && (
+                <textarea
+                  value={selectedBook.description.message}
+                  onChange={(e) =>
+                    setSelectedBook((prev) =>
+                      prev
+                        ? {
+                            ...prev,
+                            description: {
+                              ...prev.description,
+                              message: e.target.value,
+                            },
+                          }
+                        : prev
+                    )
+                  }
+                  placeholder="Description"
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              )}
+
+              <Select
+                value={selectedBook?.description.condition}
+                onValueChange={(value) => {
+                  setSelectedBook((prev) =>
+                    prev
+                      ? {
+                          ...prev,
+                          description: {
+                            ...prev.description,
+                            condition: value,
+                          },
+                        }
+                      : prev
+                  );
+                }}
+              >
+                <SelectTrigger className="w-auto">
+                  <SelectValue placeholder="Select Book Condition" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Condition</SelectLabel>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="good">Good</SelectItem>
+                    <SelectItem value="acceptable">Acceptable</SelectItem>
+                    <SelectItem value="damaged">Damaged</SelectItem>
+                    <SelectItem value="vintage">Vintage</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              <input
+                type="text"
+                value={selectedBook.description.preferred_exchange}
                 onChange={(e) =>
-                  setSelectedBook({
-                    ...selectedBook,
-                    description: e.target.value,
-                  })
+                  setSelectedBook((prev) =>
+                    prev
+                      ? {
+                          ...prev,
+                          description: {
+                            ...prev.description,
+                            preferred_exchange: e.target.value,
+                          },
+                        }
+                      : prev
+                  )
                 }
-                placeholder="Description"
+                placeholder="Preferred Exchange"
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
@@ -688,6 +759,6 @@ export default function BookDetails({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }
