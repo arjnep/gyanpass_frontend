@@ -30,6 +30,7 @@ import {
 import NotFound from "@/app/not-found";
 import dynamic from "next/dynamic";
 import ArrowLeftIcon from "@/components/custom/ArrowLeft";
+import Header from "@/app/components/Header";
 
 const BookDetails = dynamic(() => import("@/app/components/BookDetails"), {
   ssr: false,
@@ -65,7 +66,7 @@ interface Book {
 
 export default function BookDetailsPage() {
   const router = useRouter();
-  const { token, logout } = useAuth();
+  const { token, logout, isAuthenticated } = useAuth();
 
   const { id } = useParams<{ id: string }>(); // Get the book ID from the URL
   const [book, setBook] = useState<Book | null>(null);
@@ -151,6 +152,7 @@ export default function BookDetailsPage() {
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
+      <Header />
       <div className="p-6 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon">

@@ -136,7 +136,6 @@ export default function BookDetails({
         );
         if (response.ok) {
           const data = await response.json();
-          console.log("UserID: ", user.uid);
           const hasRequested = data.requests.some(
             (request: any) => request.requested_by_id === user.uid
           );
@@ -159,7 +158,6 @@ export default function BookDetails({
 
     if (user) {
       checkRequestStatus();
-      console.log(isRequester);
     }
   }, [user, book?.id, token, isRequester]);
 
@@ -237,7 +235,6 @@ export default function BookDetails({
   const handleLocationSelect = (lat: number, lng: number) => {
     setSelectedBook(book);
     setLocation({ lat, lng });
-    console.log("Selected Location:", lat, lng);
   };
 
   const handleLocationChange = async () => {

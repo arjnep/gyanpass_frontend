@@ -94,9 +94,10 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
       }
 
       const data = await response.json();
-      setBooks(data.books);
+      setBooks(data.books || []);
     } catch (err: any) {
       setError(err.message || "Failed to fetch books");
+      setBooks([])
     } finally {
       setLoading(false);
     }
@@ -152,7 +153,7 @@ const OfferBookDialog: React.FC<OfferBookDialogProps> = ({
           <DialogHeader>
             <DialogTitle>Choose a Book to Offer</DialogTitle>
             <DialogDescription>
-              Select a book from the list to offer for {`<b>${requested_book.title}</b>`}
+              Select a book from the list to offer for <b>{requested_book.title}</b>
             </DialogDescription>
           </DialogHeader>
           {loading && <Loading message="Loading..." />}

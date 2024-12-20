@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(token); // Update token state
     setUser(user);
     setIsAuthenticated(true);
-    // router.push('/dashboard');
+    router.push('/dashboard');
   };
 
   const register = async (token: string, user: any) => {
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null); // Clear token state
     setUser(null);
     setIsAuthenticated(false);
-    router.push('/auth');
+    router.push('/');
   };
 
   const validateToken = async (): Promise<boolean> => {

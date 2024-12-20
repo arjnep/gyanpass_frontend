@@ -69,7 +69,6 @@ const AddBookForm = () => {
         if (!isValid) {
           setIsSessionDialogOpen(true);
         }
-        console.log("Token valid:", isValid); // Log the result
       } catch (error) {
         console.error("Error validating token:", error);
       }
@@ -107,7 +106,6 @@ const AddBookForm = () => {
     if (!coverUrl) {
       setValidationError("All fields are necessary");
       fileInputRef.current?.focus();
-      console.log(location);
       return;
     }
     setValidationError(null);
@@ -117,7 +115,6 @@ const AddBookForm = () => {
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setLocation({ lat, lng });
-    console.log("Selected Location:", lat, lng);
   };
 
   const handleSuccessResponse = () => {
@@ -162,23 +159,32 @@ const AddBookForm = () => {
     file: File,
     bookId: string
   ) => {
-    const fileExtension = file.name.split(".").pop(); // Get file extension
-    const fileName = `books/${bookId}.${fileExtension}`; // Create new file name with bookId as prefix
+    const fileExtension = file.name.split(".").pop();
+    const fileName = `books/${bookId}.${fileExtension}`;
     const storageRef = ref(storage, fileName);
-
-    // Upload file and get download URL
+  
     const snapshot = await uploadBytes(storageRef, file);
     const downloadUrl = await getDownloadURL(snapshot.ref);
-
+  
     return downloadUrl;
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     try {
+      let uploadedCoverUrl = "";
+      if (imageFile) {
+        // Upload the image before creating the book
+        uploadedCoverUrl = await uploadImageToFirebaseWithBookId(
+          imageFile,
+          crypto.randomUUID() // Use UUID for the book ID
+        );
+      }
+  
+      // Create the book with the image URL
       const bookResponse = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/books/`,
         {
@@ -199,38 +205,17 @@ const AddBookForm = () => {
             address,
             latitude: location?.lat,
             longitude: location?.lng,
-            image_url: imageFile?.name,
+            image_url: uploadedCoverUrl, // Use the uploaded URL directly
           }),
         }
       );
-
+  
       if (!bookResponse.ok) {
         const errorData = await bookResponse.json();
         handleErrorResponse(errorData);
         return;
       }
-
-      const { book } = await bookResponse.json();
-
-      let uploadedCoverUrl = "";
-      if (imageFile) {
-        uploadedCoverUrl = await uploadImageToFirebaseWithBookId(
-          imageFile,
-          book.id
-        );
-      }
-
-      await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/books/${book.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          image_url: uploadedCoverUrl,
-        }),
-      });
-
+  
       setIsAddBookDialogOpen(false);
       handleSuccessResponse();
     } catch (err: any) {
@@ -239,6 +224,7 @@ const AddBookForm = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <Card>

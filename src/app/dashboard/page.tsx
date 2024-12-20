@@ -19,6 +19,7 @@ import RequestsMade from "../components/RequestsMade";
 import RequestsReceived from "../components/RequestsReceived";
 import NotFound from "../not-found";
 import dynamic from 'next/dynamic';
+import Header from "../components/Header";
 
 const AddBookForm = dynamic(() => import('../components/AddBookForm'), { 
   ssr: false 
@@ -35,6 +36,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
+      <Header />
       <main className="flex-1 grid grid-cols-1 gap-8 p-8">
         <Tabs
           defaultValue="search-books"

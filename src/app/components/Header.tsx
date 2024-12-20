@@ -78,9 +78,10 @@ const Header = () => {
           },
         }
       );
+      console.log("Response of Notif: ", response)
+      console.log("TOken is ", token)
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         setNotifications(data.notifications);
       } else {
         const errorData = await response.json();
@@ -173,8 +174,6 @@ const Header = () => {
   ).length;
 
   return (
-    <>
-      {isAuthenticated ? (
         <header className="bg-background px-4 lg:px-6 h-20 flex items-center justify-between">
           <Link
             href="/dashboard"
@@ -336,131 +335,6 @@ const Header = () => {
             </DropdownMenu>
           </div>
         </header>
-      ) : (
-        <header className="bg-background px-4 lg:px-6 h-14 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center justify-center"
-            prefetch={false}
-          >
-            <BookIcon className="h-6 w-6" />
-            <span className="sr-only">Book Exchange</span>
-          </Link>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full lg:hidden"
-              >
-                <MenuIcon className="h-6 w-6" />
-                <span className="sr-only">Toggle navigation menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="lg:hidden">
-              <nav className="grid gap-4 sm:gap-6 py-6">
-                <Link
-                  href="#featured-books"
-                  className="text-sm font-medium hover:underline underline-offset-4"
-                  prefetch={false}
-                >
-                  Featured Books
-                </Link>
-                <Link
-                  href="#how-it-works"
-                  className="text-sm font-medium hover:underline underline-offset-4"
-                  prefetch={false}
-                >
-                  How It Works
-                </Link>
-                <Link
-                  href="#about"
-                  className="text-sm font-medium hover:underline underline-offset-4"
-                  prefetch={false}
-                >
-                  About
-                </Link>
-                <Link
-                  href="#contact"
-                  className="text-sm font-medium hover:underline underline-offset-4"
-                  prefetch={false}
-                >
-                  Contact
-                </Link>
-              </nav>
-              <div className="flex gap-x-2">
-                <div className="flex items-center gap-4 sm:gap-6 rounded-full border border-muted py-2 px-4">
-                  <Link
-                    href="/auth"
-                    className="text-sm font-medium hover:underline underline-offset-4"
-                    prefetch={false}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/auth"
-                    className="text-sm font-medium hover:underline underline-offset-4"
-                    prefetch={false}
-                  >
-                    Sign Up
-                  </Link>
-                </div>
-                <ThemeToggle />
-              </div>
-            </SheetContent>
-          </Sheet>
-          <nav className="hidden lg:flex gap-4 sm:gap-6 rounded-full border border-muted py-2 px-4">
-            <Link
-              href="#featured-books"
-              className="text-sm font-medium hover:underline underline-offset-4"
-              prefetch={false}
-            >
-              Featured Books
-            </Link>
-            <Link
-              href="#how-it-works"
-              className="text-sm font-medium hover:underline underline-offset-4"
-              prefetch={false}
-            >
-              How It Works
-            </Link>
-            <Link
-              href="#about"
-              className="text-sm font-medium hover:underline underline-offset-4"
-              prefetch={false}
-            >
-              About
-            </Link>
-            <Link
-              href="#contact"
-              className="text-sm font-medium hover:underline underline-offset-4"
-              prefetch={false}
-            >
-              Contact
-            </Link>
-          </nav>
-          <div className="hidden lg:flex gap-x-2">
-            <div className="hidden items-center lg:flex gap-4 sm:gap-6 rounded-full border border-muted py-2 px-4">
-              <Link
-                href="/auth"
-                className="text-sm font-medium hover:underline underline-offset-4"
-                prefetch={false}
-              >
-                Login
-              </Link>
-              <Link
-                href="/auth"
-                className="text-sm font-medium hover:underline underline-offset-4"
-                prefetch={false}
-              >
-                Sign Up
-              </Link>
-            </div>
-            <ThemeToggle />
-          </div>
-        </header>
-      )}
-    </>
   );
 };
 

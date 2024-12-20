@@ -173,7 +173,6 @@ export default function AuthPage() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Login successful:", data);
         handleAuthSuccessResponse("login");
         setTimeout(() => {
           login(data.token, data.user);
@@ -210,7 +209,6 @@ export default function AuthPage() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Sign-up successful:", data);
         register(data.token, data.user);
         handleAuthSuccessResponse("signup");
         // Handle successful sign-up (e.g., auto-login, redirect, etc.)

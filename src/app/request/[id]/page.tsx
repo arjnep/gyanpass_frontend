@@ -28,6 +28,7 @@ import {
 import { Button } from "@/components/ui/button";
 import SuccessAnimation from "@/components/custom/Success";
 import ArrowLeftIcon from "@/components/custom/ArrowLeft";
+import Header from "@/app/components/Header";
 
 interface Book {
   id: number;
@@ -183,6 +184,7 @@ export default function RequestDetailsPage() {
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
+      <Header />
       <div className="p-6 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon">

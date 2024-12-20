@@ -37,7 +37,6 @@ export default function RootServerLayout({
             disableTransitionOnChange
           >
         <div className="flex flex-col min-h-[100dvh]">
-          {showHeader && <Header />}
           {children}
           <Footer />
         </div>
