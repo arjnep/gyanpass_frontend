@@ -37,7 +37,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <Header />
-      <main className="flex-1 grid grid-cols-1 gap-8 p-8">
+      <main className="flex-1 grid grid-cols-1 gap-8 sm:p-8 p-1">
         <Tabs
           defaultValue="search-books"
           className="overflow-x-auto whitespace-nowrap"

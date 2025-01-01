@@ -317,7 +317,7 @@ export default function Account() {
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
-      <div className="p-6 space-y-6">
+      <div className="py-6 sm:p-6 px-2 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon">
             <ArrowLeftIcon href="/dashboard" />
@@ -339,7 +339,7 @@ export default function Account() {
         ) : error ? (
           <div className="text-red-500 my-10 text-lg text-center">{error}</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-8 lg:p-8">
             <div className="flex flex-col gap-4">
               <Card>
                 <CardContent className="grid grid-cols-1 gap-6">

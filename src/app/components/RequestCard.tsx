@@ -14,7 +14,7 @@ type ExchangeRequestCardProps = {
 };
 
 const ExchangeRequestCard = ({ type, requested_by_or_to, title, author, genre, coverUrl, children}: ExchangeRequestCardProps) => (
-  <Card className="flex justify-between items-center">
+  <Card className="sm:flex justify-between items-center">
     <CardContent>
       <div className="flex flex-col items-start gap-4">
         <div className="flex items-center gap-4">
@@ -41,7 +41,7 @@ const ExchangeRequestCard = ({ type, requested_by_or_to, title, author, genre, c
         </div>
   </div>
     </CardContent>
-    <CardFooter className="flex gap-2 justify-center">
+    <CardFooter className="float-end">
       {children}
     </CardFooter>
   </Card>
