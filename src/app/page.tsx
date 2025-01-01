@@ -95,7 +95,7 @@ export default function Home() {
           prefetch={false}
         >
           <BookIcon className="h-6 w-6" />
-          <span className="sr-only">Book Exchange</span>
+          <span className="sr-only">GyanPass</span>
         </Link>
         <Sheet>
           <SheetTrigger asChild>
@@ -123,20 +123,6 @@ export default function Home() {
                 prefetch={false}
               >
                 How It Works
-              </Link>
-              <Link
-                href="#about"
-                className="text-sm font-medium hover:underline underline-offset-4"
-                prefetch={false}
-              >
-                About
-              </Link>
-              <Link
-                href="#contact"
-                className="text-sm font-medium hover:underline underline-offset-4"
-                prefetch={false}
-              >
-                Contact
               </Link>
             </nav>
             <div className="flex gap-x-2">
@@ -187,20 +173,6 @@ export default function Home() {
           >
             How It Works
           </Link>
-          <Link
-            href="#about"
-            className="text-sm font-medium hover:underline underline-offset-4"
-            prefetch={false}
-          >
-            About
-          </Link>
-          <Link
-            href="#contact"
-            className="text-sm font-medium hover:underline underline-offset-4"
-            prefetch={false}
-          >
-            Contact
-          </Link>
         </nav>
         <div className="hidden lg:flex gap-x-2">
           <div className="hidden items-center lg:flex gap-4 sm:gap-6 rounded-full border border-muted py-2 px-4">
@@ -241,7 +213,7 @@ export default function Home() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    Exchange Books to Read
+                    GyanPass
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
                     Join our book exchange platform and explore a world of
@@ -282,7 +254,7 @@ export default function Home() {
           id="featured-books"
           className="w-full py-12 md:py-24 lg:py-32 bg-muted"
         >
-          <div className="container px-4 md:px-6">
+          <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
@@ -334,7 +306,7 @@ export default function Home() {
           </div>
         </section>
         <section id="how-it-works" className="w-full py-12 md:py-24 lg:py-32 bg-[url('/hero2.svg')]">
-          <div className="container px-4 md:px-6">
+          <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">

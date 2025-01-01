@@ -153,7 +153,7 @@ export default function BookDetailsPage() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
       <Header />
-      <div className="p-6 space-y-6">
+      <div className="py-6 sm:p-6 px-2 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon">
             <ArrowLeftIcon href="/dashboard" />
